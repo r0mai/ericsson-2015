@@ -1,0 +1,8 @@
+#include <iostream>
+
+int main() {
+    int a = 0;
+    // Will the next line be executed????????????????/
+    a++;
+    std::cout << a << std::endl;
+}
