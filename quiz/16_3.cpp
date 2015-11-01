@@ -2,13 +2,16 @@
 
 struct Foo {};
 
+bool operator<<(std::ostream&, Foo f) {
+    return false;
+}
+
 bool operator<<(Foo b, std::ostream& (*func)(std::ostream&)) {
-    std::cout << "operator<<(Foo)" << std::endl;
     return true;
 }
 
-bool f() { std::cout << "f()" << std::endl; return false; }
-Foo g() { std::cout << "g()" << std::endl; return {}; }
+Foo f() { return {}; }
+Foo g() { return {}; }
 
 int main() {
     std::cout << f() && g() << std::endl;
