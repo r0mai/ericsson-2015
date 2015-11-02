@@ -1,0 +1,53 @@
+package protocol;
+
+enum Capability {
+	INCREASEMAXFLUXCAPATITOR = 1;
+	INCREASEFLUXCAPATITORRADIUS = 2;
+	DECREASEFLUXCAPATITORRADIUS = 3;
+	INCREASEFLUXCAPATITORTIME = 4;
+	DECREASEFLUXCAPATITORTIME = 5;
+	DECREASEFLUXCAPATITORMAKING = 6;
+	INCREASEENERGY = 7;
+	KICKFLUXCAPATITOR = 8;
+	THROWFLUXCAPATITOR = 9;
+}
+
+message FluxCapatitor {
+	required uint32 id = 1;
+	required uint32 time_to_activated = 2;
+	required uint32 radius = 3;
+	optional uint32 timetravel_length = 4;
+}
+
+message FluxCapatitorInformations {
+	optional uint32 next_done_time = 1;
+	required uint32 making_time = 2;
+	required uint32 max_flux_capatitors = 3;
+	required FluxCapatitor next_flux_capatitor = 4;
+}
+
+message Doc {
+	required uint32 id = 1;
+	required uint32 survive_timetravels = 2;
+	repeated FluxCapatitor flux_capatitors = 3;
+	required FluxCapatitorInformations informations = 4;
+	repeated Capability capabilities = 5;
+}
+
+message Enemy {
+	required uint32 id = 1;
+	required uint32 survive_timetravels = 2;
+	required uint32 intelligence = 3;
+	required uint32 radius = 4;
+}
+
+message Chest {
+	required uint32 id = 1;
+	required uint32 survive_timetravels = 2;
+	optional Capability capability = 3;
+}
+
+message DeLorean {
+	required uint32 id = 1;
+	required uint32 survive_timetravels = 2;
+}
