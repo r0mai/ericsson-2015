@@ -1,9 +1,9 @@
 #ifndef RESPONSEHELPER_HPP
 #define RESPONSEHELPER_HPP
 
-#include <protobuf/Response.pb.h>
-#include <protobuf/Elements.pb.h>
-#include <protobuf/Global.pb.h>
+#include "Response.pb.h"
+#include "Elements.pb.h"
+#include "Global.pb.h"
 
 class ResponseHelper 
 {
