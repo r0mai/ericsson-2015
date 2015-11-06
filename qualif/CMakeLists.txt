@@ -9,7 +9,9 @@ find_package(Protobuf)
 
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+endif()
 
 aux_source_directory(src SOURCES)
 add_executable(doki ${SOURCES})
