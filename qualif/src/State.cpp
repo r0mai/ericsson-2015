@@ -19,36 +19,36 @@ struct ToCharVisitor : boost::static_visitor<char> {
 std::string toString(const Fields& fields) {
     std::stringstream ss;
     for (const auto& row : fields) {
-	for (const auto& field : row) {
-	    ss << boost::apply_visitor(ToCharVisitor{}, field.element);
-	}
-	ss << '\n';
+    for (const auto& field : row) {
+        ss << boost::apply_visitor(ToCharVisitor{}, field.element);
+    }
+    ss << '\n';
     }
     return ss.str();
 }
 
 std::string fromProto(protocol::Global::Error error) {
     switch (error) {
-	case protocol::Global::NOTSETDIRECTION:
-	    return "NOTSETDIRECTION";
-	case protocol::Global::WRONGDIRECTION:
-	    return "WRONGDIRECTION";
-	case protocol::Global::WRONGMOVE:
-	    return "WRONGMOVE";
-	case protocol::Global::NOTSETFLUXCAPATITORID:
-	    return "NOTSETFLUXCAPATITORID";
-	case protocol::Global::NOTSETFLUXCAPATITORTIME:
-	    return "NOTSETFLUXCAPATITORTIME";
-	case protocol::Global::WRONGFLUXCAPATITORID:
-	    return "WRONGFLUXCAPATITORID";
-	case protocol::Global::WRONGFLUXCAPATITORTIME:
-	    return "WRONGFLUXCAPATITORTIME";
-	case protocol::Global::NOTSETCAPABILITY:
-	    return "NOTSETCAPABILITY";
-	case protocol::Global::WRONGCAPABILITY:
-	    return "WRONGCAPABILITY";
-	case protocol::Global::WRONGUSECAPABILITY:
-	    return "WRONGUSECAPABILITY";
+    case protocol::Global::NOTSETDIRECTION:
+        return "NOTSETDIRECTION";
+    case protocol::Global::WRONGDIRECTION:
+        return "WRONGDIRECTION";
+    case protocol::Global::WRONGMOVE:
+        return "WRONGMOVE";
+    case protocol::Global::NOTSETFLUXCAPATITORID:
+        return "NOTSETFLUXCAPATITORID";
+    case protocol::Global::NOTSETFLUXCAPATITORTIME:
+        return "NOTSETFLUXCAPATITORTIME";
+    case protocol::Global::WRONGFLUXCAPATITORID:
+        return "WRONGFLUXCAPATITORID";
+    case protocol::Global::WRONGFLUXCAPATITORTIME:
+        return "WRONGFLUXCAPATITORTIME";
+    case protocol::Global::NOTSETCAPABILITY:
+        return "NOTSETCAPABILITY";
+    case protocol::Global::WRONGCAPABILITY:
+        return "WRONGCAPABILITY";
+    case protocol::Global::WRONGUSECAPABILITY:
+        return "WRONGUSECAPABILITY";
     }
     return "UNKNOWN ERROR";
 }
@@ -62,18 +62,18 @@ State fromProto(const protocol::Global& g) {
     res.height = g.height();
 
     res.fields =
-	std::vector<std::vector<Field>>(res.width,
-	std::vector<Field>(res.height));
+    std::vector<std::vector<Field>>(res.width,
+    std::vector<Field>(res.height));
 
     assert(g.fields_size() == res.width * res.height);
     for (uint32_t y = 0; y < res.height; ++y) {
-	for (uint32_t x = 0; x < res.width; ++x) {
-	    res.fields[x][y] = fromProto(g.fields(y * res.height + x));
-	}
+    for (uint32_t x = 0; x < res.width; ++x) {
+        res.fields[x][y] = fromProto(g.fields(y * res.height + x));
+    }
     }
 
     if (g.has_error()) {
-	res.error = fromProto(g.error());
+    res.error = fromProto(g.error());
     }
     return res;
 }
