@@ -4,6 +4,28 @@
 
 namespace bm {
 
+struct ToCharVisitor : boost::static_visitor<char> {
+    char operator()(const FluxCapatitor&) const { return 'F'; }
+    char operator()(const Doc&) const { return 'D'; }
+    char operator()(const Enemy&) const { return 'E'; }
+    char operator()(const Wall&) const { return 'W'; }
+    char operator()(const Chest&) const { return 'C'; }
+    char operator()(const DeLorean&) const { return 'L'; }
+    char operator()(const Capability&) const { return 'F'; }
+    char operator()(const boost::blank&) const { return ' '; }
+};
+
+std::string toString(const Fields& fields) {
+    std::stringstream ss;
+    for (const auto& row : fields) {
+	for (const auto& field : row) {
+	    ss << boost::apply_visitor(ToCharVisitor{}, field.element);
+	}
+	ss << '\n';
+    }
+    return ss.str();
+}
+
 std::string fromProto(protocol::Global::Error error) {
     switch (error) {
 	case protocol::Global::NOTSETDIRECTION:

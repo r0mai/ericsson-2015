@@ -13,7 +13,7 @@ public:
     void run();
 
 private:
-    protocol::Response calculateResponse(const protocol::Global& global);
+    protocol::Response calculateResponse(const State& state);
 
     static constexpr unsigned kMaxRounds = 300;
 };

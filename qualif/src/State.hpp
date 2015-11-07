@@ -23,6 +23,8 @@ struct State {
     boost::optional<std::string> error;
 };
 
+std::string toString(const Fields& fields);
+
 std::string fromProto(protocol::Global::Error error);
 State fromProto(const protocol::Global& g);
 

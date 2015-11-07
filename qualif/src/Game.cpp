@@ -9,7 +9,7 @@ namespace bm {
 void Game::run() {
     protocol::Global global;
     while (readProtoFromStream(global, std::cin)) {
-        protocol::Response response = calculateResponse(global);
+        protocol::Response response = calculateResponse(fromProto(global));
 
         if (!writeProtoOnStream(response, std::cout)) {
             std::cerr << "write error" << std::endl;
@@ -19,10 +19,12 @@ void Game::run() {
     std::cerr << "Game over, std::cin.eof(): " << std::cin.eof() << std::endl;
 }
 
-protocol::Response Game::calculateResponse(const protocol::Global& global) {
+protocol::Response Game::calculateResponse(const State& state) {
     ResponseHelper helper;
 
-    std::cerr << "Logging that we do not do anything in " << global.tick() << " tick" << std::endl;
+    std::cerr << "Logging that we do not do anything in " << state.tick << " tick" << std::endl;
+
+    std::cerr << toString(state.fields) << std::endl;
     helper.nothing();
 
     return helper.getResponse();
