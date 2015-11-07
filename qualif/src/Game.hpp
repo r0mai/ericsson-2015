@@ -2,6 +2,8 @@
 
 #include "responseHelper.hpp"
 
+#include "State.hpp"
+
 namespace bm {
 
 class Game {
