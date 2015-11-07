@@ -1,6 +1,7 @@
 #include "State.hpp"
 
 #include <cassert>
+#include <sstream>
 
 namespace bm {
 
@@ -60,7 +61,9 @@ State fromProto(const protocol::Global& g) {
     res.width = g.width();
     res.height = g.height();
 
-    res.fields = Fields(boost::extents[res.width][res.height]);
+    res.fields =
+	std::vector<std::vector<Field>>(res.width,
+	std::vector<Field>(res.height));
 
     assert(g.fields_size() == res.width * res.height);
     for (uint32_t y = 0; y < res.height; ++y) {

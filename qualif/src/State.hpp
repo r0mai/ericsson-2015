@@ -4,14 +4,12 @@
 #include <string>
 #include <cstdint>
 
-#include <boost/multi_array.hpp>
-
 #include "Global.pb.h"
 #include "Global.hpp"
 
 namespace bm {
 
-using Fields = boost::multi_array<Field, 2>;
+using Fields = std::vector<std::vector<Field>>;
 
 struct State {
     uint32_t tick;
