@@ -5,10 +5,10 @@
 #include "Elements.pb.h"
 #include "Global.pb.h"
 
-class ResponseHelper 
+class ResponseHelper
 {
 public:
-    void nothing() 
+    void nothing()
     {
         response.Clear();
     }
@@ -26,8 +26,8 @@ public:
     void moveDown()  { move(protocol::Response::DOWN ); }
 
 
-    void put(protocol::Response::Direction direction_to_put, 
-             unsigned int flux_capatitor_id, 
+    void put(protocol::Response::Direction direction_to_put,
+             unsigned int flux_capatitor_id,
              unsigned int flux_capatitor_time)
     {
         response.Clear();
@@ -36,7 +36,7 @@ public:
         response.set_flux_capatitor_id(flux_capatitor_id);
         response.set_flux_capatitor_time(flux_capatitor_time);
     }
-    
+
     void putLeft (unsigned int flux_capatitor_id, unsigned int flux_capatitor_time)
     { put(protocol::Response::LEFT , flux_capatitor_id, flux_capatitor_time); }
 
@@ -49,22 +49,22 @@ public:
     void putDown (unsigned int flux_capatitor_id, unsigned int flux_capatitor_time)
     { put(protocol::Response::DOWN , flux_capatitor_id, flux_capatitor_time); }
 
-    
-    void putWithCapability(protocol::Response::Direction direction_to_put, 
-                           unsigned int flux_capatitor_id, 
+
+    void putWithCapability(protocol::Response::Direction direction_to_put,
+                           unsigned int flux_capatitor_id,
                            unsigned int flux_capatitor_time)
     {
         put(direction_to_put, flux_capatitor_id, flux_capatitor_time);
         response.set_capability(protocol::THROWFLUXCAPATITOR);
     }
 
-    void use(protocol::Capability capability) 
+    void use(protocol::Capability capability)
     {
         response.Clear();
         response.set_command(protocol::Response::USECAPABILITY);
         response.set_capability(capability);
     }
-    
+
     void useWithDirection(protocol::Capability capability,
                           protocol::Response::Direction direction_to_use)
     {
@@ -78,7 +78,7 @@ public:
             break;
         }
     }
-    
+
     void useLeft (protocol::Capability capability)
     { useWithDirection(capability, protocol::Response::LEFT ); }
 
