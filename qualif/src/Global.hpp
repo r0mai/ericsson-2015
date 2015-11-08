@@ -33,8 +33,6 @@ using FieldElement = boost::variant<
     Capability
 >;
 
-bool isFieldElementA(const FieldElement& fe, ElementType type);
-
 struct Field {
     FieldElement element; // can be blank
     boost::optional<ElementType> next_tick_arrives;
