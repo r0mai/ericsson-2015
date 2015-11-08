@@ -11,7 +11,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 include_directories(src)
 
 if(NOT WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -g -O0")
 endif()
 
 aux_source_directory(bin BIN_SOURCES)

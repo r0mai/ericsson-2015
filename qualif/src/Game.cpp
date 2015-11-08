@@ -242,6 +242,7 @@ std::vector<Point> Game::getPathTo(
                 {
                     goto use_it;
                 }
+                continue;
             }
 use_it:
             todo.push(p);
