@@ -3,6 +3,9 @@
 #include "responseHelper.hpp"
 
 #include "State.hpp"
+#include "Point.hpp"
+
+#include <vector>
 
 namespace bm {
 
@@ -13,9 +16,14 @@ public:
     void run();
 
 private:
-    protocol::Response calculateResponse(const State& state);
+    std::vector<Point> getPathTo(const Point& from, const Point& to) const;
+    boost::optional<Point> findObject(ElementType type);
+
+    protocol::Response calculateResponse();
 
     static constexpr unsigned kMaxRounds = 300;
+
+    State currentState;
 };
 
 } // namespace bm

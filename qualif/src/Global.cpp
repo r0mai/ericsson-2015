@@ -2,6 +2,26 @@
 
 namespace bm {
 
+struct IsAVisitor : boost::static_visitor<bool> {
+    IsAVisitor(ElementType type) : type(type) {}
+
+    bool operator()(const boost::blank&) const { return type == ElementType::BLANK; }
+    bool operator()(const FluxCapatitor&) const { return type == ElementType::FLUXCAPATITOR; }
+    bool operator()(const Doc&) const { return type == ElementType::DOC; }
+    bool operator()(const Enemy&) const { return type == ElementType::ENEMY; }
+    bool operator()(const Wall&) const { return type == ElementType::WALL; }
+    bool operator()(const Chest&) const { return type == ElementType::CHEST; }
+    bool operator()(const DeLorean&) const { return type == ElementType::DELOREAN; }
+    bool operator()(const Capability&) const { return type == ElementType::CAPABILITY; }
+
+private:
+    ElementType type;
+};
+
+bool isFieldElementA(const FieldElement& fe, ElementType type) {
+    return boost::apply_visitor(IsAVisitor{type}, fe);
+}
+
 ElementType fromProto(protocol::Field::ElementType et) {
     switch (et) {
         case protocol::Field::FLUXCAPATITOR:
@@ -44,6 +64,9 @@ FieldElement fromProto(const protocol::Field::ElementInfo& ei) {
 	case ElementType::CAPABILITY:
 	    assert(ei.has_capability());
 	    return fromProto(ei.capability());
+        case ElementType::BLANK:
+            // should never happen
+            return {};
     }
     assert(false);
 }

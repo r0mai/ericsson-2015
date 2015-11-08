@@ -10,13 +10,14 @@
 namespace bm {
 
 enum class ElementType {
+    BLANK,
     FLUXCAPATITOR,
     DOC,
     ENEMY,
     WALL,
     CHEST,
     DELOREAN,
-    CAPABILITY
+    CAPABILITY,
 };
 
 struct Wall {};
@@ -31,6 +32,8 @@ using FieldElement = boost::variant<
     DeLorean,
     Capability
 >;
+
+bool isFieldElementA(const FieldElement& fe, ElementType type);
 
 struct Field {
     FieldElement element; // can be blank
