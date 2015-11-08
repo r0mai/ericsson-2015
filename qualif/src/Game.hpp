@@ -16,6 +16,10 @@ public:
     void run();
 
 //private: // disabled to avoid testing boiler plate
+
+    // Returns none if no path is found
+    boost::optional<protocol::Response> goToDelorean();
+
     std::vector<Point> getPathTo(const Point& from, const Point& to) const;
     boost::optional<Point> findObject(ElementType type);
 
@@ -25,6 +29,8 @@ public:
     protocol::Response calculateResponse();
 
     static constexpr unsigned kMaxRounds = 300;
+    static constexpr unsigned kMinTimeTravel = 2; //inclusive
+    static constexpr unsigned kMaxTimeTravel = 6; //inclusive
 
     State currentState;
 };

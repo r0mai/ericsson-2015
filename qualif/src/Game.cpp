@@ -19,7 +19,6 @@ void Game::run() {
         }
         currentState = fromProto(global);
         protocol::Response response = calculateResponse();
-
         if (!writeProtoOnStream(response, std::cout)) {
             std::cerr << "write error" << std::endl;
             break;
@@ -32,9 +31,7 @@ void Game::run() {
     std::cerr << "Game over, std::cin.eof(): " << std::cin.eof() << std::endl;
 }
 
-protocol::Response Game::calculateResponse() {
-    ResponseHelper helper;
-
+boost::optional<protocol::Response> Game::goToDelorean() {
     std::cerr << "Info: Tick = " << currentState.tick << std::endl;
     std::cerr << toString(currentState.fields) << std::endl;
 
@@ -43,23 +40,34 @@ protocol::Response Game::calculateResponse() {
 
     if (!docLocation || !deLoreanLocation) {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
-        helper.nothing();
-        return helper.getResponse();
+        return boost::none;
     }
 
     std::cerr << "Info: DocLocation = " << *docLocation << std::endl;
     std::cerr << "Info: DeLoreanLocation = " << *deLoreanLocation << std::endl;
 
     auto path = getPathTo(*docLocation, *deLoreanLocation);
+
     if (path.empty()) {
         std::cerr << "Error: can't find path to deLorean from doc" << std::endl;
-        helper.nothing();
-        return helper.getResponse();
+        return boost::none;
     }
 
     auto direction = getDirection(*docLocation, path.front());
     std::cerr << "Info: Moving to " << direction << std::endl;
+    ResponseHelper helper;
     helper.move(direction);
+    return helper.getResponse();
+}
+
+protocol::Response Game::calculateResponse() {
+    auto gotoResponse = goToDelorean();
+    if (gotoResponse) {
+        return *gotoResponse;
+    }
+
+    ResponseHelper helper;
+    helper.nothing();
     return helper.getResponse();
 }
 
