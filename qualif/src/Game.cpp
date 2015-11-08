@@ -113,7 +113,6 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
                     return {};
                 }
                 path.push_back(at);
-                at = parentMatrix[at.x][at.y];
             }
             std::reverse(path.begin(), path.end());
             return path;
