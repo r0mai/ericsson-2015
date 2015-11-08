@@ -65,7 +65,7 @@ State fromProto(const protocol::Global& g) {
         std::vector<std::vector<Field>>(res.width,
         std::vector<Field>(res.height));
 
-    assert(g.fields_size() == res.width * res.height);
+    assert(g.fields_size() == int(res.width * res.height));
     for (uint32_t y = 0; y < res.height; ++y) {
         for (uint32_t x = 0; x < res.width; ++x) {
             res.fields[x][y] = fromProto(g.fields(y * res.height + x));
