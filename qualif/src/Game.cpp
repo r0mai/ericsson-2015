@@ -118,6 +118,11 @@ protocol::Response Game::calculateResponse() {
         return *gotoResponse;
     }
 
+    auto fluxCapatitorResponse = fireAFluxCapacitor();
+    if (fluxCapatitorResponse) {
+        return *fluxCapatitorResponse;
+    }
+
     ResponseHelper helper;
     helper.nothing();
     return helper.getResponse();
