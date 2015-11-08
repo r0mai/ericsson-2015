@@ -77,7 +77,18 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
         todo.pop();
 
         if (current == to) {
-            break;
+            // Build the result
+            std::vector<Point> path;
+            for (Point at = current; at != from; at = parentMatrix[at.x][at.y]) {
+                if (at == Point(-1, -1)) {
+                    std::cerr << "Error: from not found in getPathTo()" << std::endl;
+                    return {};
+                }
+                path.push_back(at);
+                at = parentMatrix[at.x][at.y];
+            }
+            std::reverse(path.begin(), path.end());
+            return path;
         }
 
         std::array<Point, 4> adjacents = {{
@@ -101,6 +112,7 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
             parentMatrix[p.x][p.y] = current;
         }
     }
+    return {};
 }
 
 } // namespace bm
