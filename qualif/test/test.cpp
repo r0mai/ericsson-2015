@@ -134,3 +134,11 @@ JUST_TEST_CASE(isElementA_1) {
     JUST_ASSERT(isFieldElementA(f, ElementType::CHEST));
     JUST_ASSERT(!isFieldElementA(f, ElementType::BLANK));
 }
+
+JUST_TEST_CASE(getDirection) {
+    Game g;
+    JUST_ASSERT_EQUAL(g.getDirection(Point(5, 4), Point(6, 4)), protocol::Response::RIGHT);
+    JUST_ASSERT_EQUAL(g.getDirection(Point(5, 4), Point(4, 4)), protocol::Response::LEFT);
+    JUST_ASSERT_EQUAL(g.getDirection(Point(5, 4), Point(5, 5)), protocol::Response::DOWN);
+    JUST_ASSERT_EQUAL(g.getDirection(Point(5, 4), Point(5, 3)), protocol::Response::UP);
+}

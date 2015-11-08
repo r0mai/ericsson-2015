@@ -77,16 +77,16 @@ boost::optional<Point> Game::findObject(ElementType type) {
 protocol::Response::Direction Game::getDirection(
     const Point& from, const Point& to)
 {
-    if (from.x == to.x + 1 && from.y == to.y) {
+    if (from.x + 1 == to.x && from.y == to.y) {
         return protocol::Response::RIGHT;
     }
-    if (from.x == to.x - 1 && from.y == to.y) {
+    if (from.x - 1 == to.x && from.y == to.y) {
         return protocol::Response::LEFT;
     }
-    if (from.x == to.x && from.y == to.y + 1) {
+    if (from.x == to.x && from.y + 1 == to.y) {
         return protocol::Response::DOWN;
     }
-    if (from.x == to.x && from.y == to.y - 1) {
+    if (from.x == to.x && from.y - 1 == to.y) {
         return protocol::Response::UP;
     }
     std::cerr << "Error: getDirection called with non adjacent vertices: " <<
