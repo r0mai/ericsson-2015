@@ -174,3 +174,82 @@ JUST_TEST_CASE(Game_getPath_simple_corridor_with_Chests) {
     JUST_ASSERT_EQUAL(path[11], Point(13, 1));
     JUST_ASSERT_EQUAL(path[12], Point(14, 1));
 }
+
+JUST_TEST_CASE(Game_gotoDeloreanWithChests_1) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "WD C    C C C LW",
+        "WWWWWWWWWWWWWWWW",
+    });
+    FluxCapatitor fc;
+    fc.id = 1123;
+
+    Game game;
+    game.currentState = state;
+    game.initExtraState();
+    game.doc.flux_capatitors.push_back(fc);
+
+    auto response = game.goToDeloreanThroughChests();
+    JUST_ASSERT(bool(response));
+
+    JUST_ASSERT(response->has_command());
+    JUST_ASSERT(response->has_direction());
+    JUST_ASSERT(response->has_flux_capatitor_id());
+    JUST_ASSERT(response->has_flux_capatitor_time());
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::RIGHT);
+    JUST_ASSERT_EQUAL(response->flux_capatitor_id(), 1123);
+    JUST_ASSERT_EQUAL(response->flux_capatitor_time(), 2);
+}
+
+JUST_TEST_CASE(Game_gotoDeloreanWithChests_2) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "W DC    C C C LW",
+        "WWWWWWWWWWWWWWWW",
+    });
+    FluxCapatitor fc;
+    fc.id = 1123;
+
+    Game game;
+    game.currentState = state;
+    game.initExtraState();
+    game.doc.flux_capatitors.push_back(fc);
+
+    auto response = game.goToDeloreanThroughChests();
+    JUST_ASSERT(bool(response));
+
+    JUST_ASSERT(response->has_command());
+    JUST_ASSERT(response->has_direction());
+    JUST_ASSERT(response->has_flux_capatitor_id());
+    JUST_ASSERT(response->has_flux_capatitor_time());
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::LEFT);
+    JUST_ASSERT_EQUAL(response->flux_capatitor_id(), 1123);
+    JUST_ASSERT_EQUAL(response->flux_capatitor_time(), 2);
+}
+
+JUST_TEST_CASE(Game_gotoDeloreanWithChests_3) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "WD  C   C C C LW",
+        "WWWWWWWWWWWWWWWW",
+    });
+    FluxCapatitor fc;
+    fc.id = 1123;
+
+    Game game;
+    game.currentState = state;
+    game.initExtraState();
+    game.doc.flux_capatitors.push_back(fc);
+
+    auto response = game.goToDeloreanThroughChests();
+    JUST_ASSERT(bool(response));
+
+    JUST_ASSERT(response->has_command());
+    JUST_ASSERT(response->has_direction());
+    JUST_ASSERT(!response->has_flux_capatitor_id());
+    JUST_ASSERT(!response->has_flux_capatitor_time());
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::RIGHT);
+}

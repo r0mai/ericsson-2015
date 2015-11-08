@@ -85,7 +85,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     if (path.size() > 1) {
         auto nextnext = path[1];
         if (isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::BLANK) &&
-            isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::CHEST))
+            isFieldElementA(currentState.fields[nextnext.x][nextnext.y].element, ElementType::CHEST))
         {
             auto useDirection = getDirection(*docLocation, next);
             ResponseHelper helper;
