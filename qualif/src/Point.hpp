@@ -20,7 +20,7 @@ bool operator==(const Point& lhs, const Point& rhs) {
 
 inline
 bool operator!=(const Point& lhs, const Point& rhs) {
-    return !(lhs.x == rhs.x);
+    return !(lhs == rhs);
 }
 
 std::ostream& operator<<(std::ostream& os, const Point& p);
