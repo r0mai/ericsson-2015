@@ -18,9 +18,9 @@ struct ToCharVisitor : boost::static_visitor<char> {
 
 std::string toString(const Fields& fields) {
     std::stringstream ss;
-    for (const auto& row : fields) {
-        for (const auto& field : row) {
-            ss << boost::apply_visitor(ToCharVisitor{}, field.element);
+    for (size_t y = 0; y < fields.size(); ++y) {
+        for (size_t x = 0; x < fields[0].size(); ++x) {
+            ss << boost::apply_visitor(ToCharVisitor{}, fields[x][y].element);
         }
         ss << '\n';
     }
@@ -62,18 +62,18 @@ State fromProto(const protocol::Global& g) {
     res.height = g.height();
 
     res.fields =
-    std::vector<std::vector<Field>>(res.width,
-    std::vector<Field>(res.height));
+        std::vector<std::vector<Field>>(res.width,
+        std::vector<Field>(res.height));
 
     assert(g.fields_size() == res.width * res.height);
     for (uint32_t y = 0; y < res.height; ++y) {
-    for (uint32_t x = 0; x < res.width; ++x) {
-        res.fields[x][y] = fromProto(g.fields(y * res.height + x));
-    }
+        for (uint32_t x = 0; x < res.width; ++x) {
+            res.fields[x][y] = fromProto(g.fields(y * res.height + x));
+        }
     }
 
     if (g.has_error()) {
-    res.error = fromProto(g.error());
+        res.error = fromProto(g.error());
     }
     return res;
 }
