@@ -47,9 +47,13 @@ protocol::Response Game::calculateResponse() {
     auto path = getPathTo(*docLocation, *deLoreanLocation);
     if (path.empty()) {
         std::cerr << "Error: can't find path to deLorean from doc" << std::endl;
+        helper.nothing();
+        return helper.getResponse();
     }
 
-    helper.nothing();
+    auto direction = getDirection(*docLocation, path.front());
+    std::cerr << "Info: Moving to " << direction << std::endl;
+    helper.move(direction);
     return helper.getResponse();
 }
 
@@ -62,6 +66,26 @@ boost::optional<Point> Game::findObject(ElementType type) {
         }
     }
     return boost::none;
+}
+
+protocol::Response::Direction Game::getDirection(
+    const Point& from, const Point& to)
+{
+    if (from.x == to.x + 1 && from.y == to.y) {
+        return protocol::Response::RIGHT;
+    }
+    if (from.x == to.x - 1 && from.y == to.y) {
+        return protocol::Response::LEFT;
+    }
+    if (from.x == to.x && from.y == to.y + 1) {
+        return protocol::Response::DOWN;
+    }
+    if (from.x == to.x && from.y == to.y - 1) {
+        return protocol::Response::UP;
+    }
+    std::cerr << "Error: getDirection called with non adjacent vertices: " <<
+        from << " and " << to << std::endl;
+    return protocol::Response::DOWN;
 }
 
 // simple BFS
@@ -117,6 +141,17 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
         }
     }
     return {};
+}
+
+std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d) {
+    switch (d) {
+        case protocol::Response::UP: os << "UP"; break;
+        case protocol::Response::DOWN: os << "DOWN"; break;
+        case protocol::Response::LEFT: os << "LEFT"; break;
+        case protocol::Response::RIGHT: os << "RIGHT"; break;
+        default: os << "UNKNOWN DIRECTION"; break;
+    }
+    return os;
 }
 
 } // namespace bm

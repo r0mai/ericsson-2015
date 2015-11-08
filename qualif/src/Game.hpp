@@ -19,12 +19,17 @@ private:
     std::vector<Point> getPathTo(const Point& from, const Point& to) const;
     boost::optional<Point> findObject(ElementType type);
 
+    protocol::Response::Direction getDirection(
+        const Point& from, const Point& to);
+
     protocol::Response calculateResponse();
 
     static constexpr unsigned kMaxRounds = 300;
 
     State currentState;
 };
+
+std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d);
 
 } // namespace bm
 
