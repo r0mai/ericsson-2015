@@ -60,7 +60,7 @@ boost::optional<protocol::Response> Game::goToDelorean() {
     return helper.getResponse();
 }
 
-boost::optional<protocol::Response> Game::fireAFluxCapacitor() {
+boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     if (!docLocation || !deLoreanLocation) {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
         return boost::none;
@@ -118,7 +118,7 @@ protocol::Response Game::calculateResponse() {
         return *gotoResponse;
     }
 
-    auto fluxCapatitorResponse = fireAFluxCapacitor();
+    auto fluxCapatitorResponse = goToDeloreanThroughChests();
     if (fluxCapatitorResponse) {
         return *fluxCapatitorResponse;
     }

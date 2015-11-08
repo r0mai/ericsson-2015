@@ -21,7 +21,7 @@ public:
 
     // Returns none if no path is found
     boost::optional<protocol::Response> goToDelorean();
-    boost::optional<protocol::Response> fireAFluxCapacitor();
+    boost::optional<protocol::Response> goToDeloreanThroughChests();
 
     std::vector<Point> getPathTo(
         const Point& from, const Point& to, bool throughChest = false) const;
