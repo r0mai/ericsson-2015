@@ -126,12 +126,12 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
             {current.x, current.y - 1},
         }};
         for (const Point& p : adjacents) {
-            if (distanceMatrix[p.x][p.y] != -1 ||
+            if (p != to && (distanceMatrix[p.x][p.y] != -1 ||
                 p.x < 0 || p.x >= currentState.width ||
                 p.y < 0 || p.y >= currentState.height ||
                 !isFieldElementA(
                     currentState.fields[current.x][current.y].element,
-                    ElementType::BLANK))
+                    ElementType::BLANK)))
             {
                 continue;
             }
