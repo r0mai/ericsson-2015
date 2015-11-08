@@ -41,6 +41,8 @@ public:
     State currentState;
     boost::optional<Point> docLocation;
     boost::optional<Point> deLoreanLocation;
+    Doc doc;
+    DeLorean deLorean;
 };
 
 std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d);

@@ -38,6 +38,15 @@ void Game::run() {
 void Game::initExtraState() {
     docLocation = findObject(ElementType::DOC);
     deLoreanLocation = findObject(ElementType::DELOREAN);
+
+    if (docLocation) {
+        doc = boost::get<Doc>(
+            currentState.fields[docLocation->x][docLocation->y].element);
+    }
+    if (deLoreanLocation) {
+        deLorean = boost::get<DeLorean>(
+            currentState.fields[deLoreanLocation->x][deLoreanLocation->y].element);
+    }
 }
 
 boost::optional<protocol::Response> Game::goToDelorean() {
@@ -65,9 +74,6 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
         return boost::none;
     }
-
-    const Doc& doc = boost::get<Doc>(
-        currentState.fields[docLocation->x][docLocation->y].element);
 
     auto path = getPathTo(*docLocation, *deLoreanLocation, true);
     if (path.empty()) {
@@ -113,14 +119,16 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 protocol::Response Game::calculateResponse() {
     initExtraState();
 
+    if (doc.survive_timetravels > 0) {
+        auto fluxCapatitorResponse = goToDeloreanThroughChests();
+        if (fluxCapatitorResponse) {
+            return *fluxCapatitorResponse;
+        }
+    }
+
     auto gotoResponse = goToDelorean();
     if (gotoResponse) {
         return *gotoResponse;
-    }
-
-    auto fluxCapatitorResponse = goToDeloreanThroughChests();
-    if (fluxCapatitorResponse) {
-        return *fluxCapatitorResponse;
     }
 
     ResponseHelper helper;
