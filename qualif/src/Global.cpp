@@ -18,8 +18,8 @@ private:
     ElementType type;
 };
 
-bool isFieldElementA(const FieldElement& fe, ElementType type) {
-    return boost::apply_visitor(IsAVisitor{type}, fe);
+bool Field::is(ElementType type) const {
+    return boost::apply_visitor(IsAVisitor{type}, element);
 }
 
 ElementType fromProto(protocol::Field::ElementType et) {

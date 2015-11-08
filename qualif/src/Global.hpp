@@ -38,6 +38,13 @@ bool isFieldElementA(const FieldElement& fe, ElementType type);
 struct Field {
     FieldElement element; // can be blank
     boost::optional<ElementType> next_tick_arrives;
+
+    template<class T>
+    bool is() const {
+        return boost::get<const T>(&element) != nullptr;
+    }
+
+    bool is(ElementType type) const;
 };
 
 ElementType fromProto(protocol::Field::ElementType et);

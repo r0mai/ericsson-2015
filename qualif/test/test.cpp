@@ -128,11 +128,12 @@ JUST_TEST_CASE(Game_getPath_real_map) {
     JUST_ASSERT_EQUAL(path.size(), 150);
 }
 
-JUST_TEST_CASE(isElementA_1) {
-    FieldElement f = Chest{};
+JUST_TEST_CASE(is_element) {
+    Field f;
+    f.element = Chest{};
 
-    JUST_ASSERT(isFieldElementA(f, ElementType::CHEST));
-    JUST_ASSERT(!isFieldElementA(f, ElementType::BLANK));
+    JUST_ASSERT(f.is(ElementType::CHEST));
+    JUST_ASSERT(!f.is(ElementType::BLANK));
 }
 
 JUST_TEST_CASE(getDirection) {

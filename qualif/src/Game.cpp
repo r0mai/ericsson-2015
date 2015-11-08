@@ -84,8 +84,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     auto next = path[0];
     if (path.size() > 1) {
         auto nextnext = path[1];
-        if (isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::BLANK) &&
-            isFieldElementA(currentState.fields[nextnext.x][nextnext.y].element, ElementType::CHEST))
+        if (currentState.fields[next.x][next.y].is(ElementType::BLANK) &&
+            currentState.fields[nextnext.x][nextnext.y].is(ElementType::CHEST))
         {
             auto useDirection = getDirection(*docLocation, next);
             ResponseHelper helper;
@@ -94,7 +94,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         }
 
     }
-    if (isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::CHEST)) {
+    if (currentState.fields[next.x][next.y].is(ElementType::CHEST)) {
         if (doc.flux_capatitors.empty()) {
             std::cerr << "Error: no flux capacitors" << std::endl;
             return boost::none;
@@ -139,7 +139,7 @@ protocol::Response Game::calculateResponse() {
 boost::optional<Point> Game::findObject(ElementType type) {
     for (size_t x = 0; x < currentState.fields.size(); ++x) {
         for (size_t y = 0; y < currentState.fields[0].size(); ++y) {
-            if (isFieldElementA(currentState.fields[x][y].element, type)) {
+            if (currentState.fields[x][y].is(type)) {
                 return Point(x, y);
             }
         }
@@ -175,8 +175,8 @@ boost::optional<Point> Game::findBlankAround(const Point& p) const {
         {p.x, p.y - 1},
     }};
     for (auto k : adjacents) {
-        if (isFieldElementA(currentState.fields[k.x][k.y].element, ElementType::BLANK) ||
-            isFieldElementA(currentState.fields[k.x][k.y].element, ElementType::CAPABILITY))
+        if (currentState.fields[k.x][k.y].is(ElementType::BLANK) ||
+            currentState.fields[k.x][k.y].is(ElementType::CAPABILITY))
         {
             return k;
         }
@@ -232,21 +232,14 @@ std::vector<Point> Game::getPathTo(
                 {
                     continue;
                 }
-                if (isFieldElementA(
-                        currentState.fields[p.x][p.y].element,
-                        ElementType::BLANK))
-                {
+                if (currentState.fields[p.x][p.y].is(ElementType::BLANK)) {
                     goto use_it;
                 }
-                if (isFieldElementA(
-                        currentState.fields[p.x][p.y].element,
-                        ElementType::CAPABILITY))
-                {
+                if (currentState.fields[p.x][p.y].is(ElementType::CAPABILITY)) {
                     goto use_it;
                 }
-                if (throughChest && isFieldElementA(
-                        currentState.fields[p.x][p.y].element,
-                        ElementType::CHEST))
+                if (throughChest &&
+                    currentState.fields[p.x][p.y].is(ElementType::CHEST))
                 {
                     goto use_it;
                 }
