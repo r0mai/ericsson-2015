@@ -15,7 +15,7 @@ public:
 
     void run();
 
-private:
+//private: // disabled to avoid testing boiler plate
     std::vector<Point> getPathTo(const Point& from, const Point& to) const;
     boost::optional<Point> findObject(ElementType type);
 
