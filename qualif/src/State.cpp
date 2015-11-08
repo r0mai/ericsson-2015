@@ -18,8 +18,8 @@ struct ToCharVisitor : boost::static_visitor<char> {
 
 std::string toString(const Fields& fields) {
     std::stringstream ss;
-    for (size_t y = 0; y < fields.size(); ++y) {
-        for (size_t x = 0; x < fields[0].size(); ++x) {
+    for (size_t x = 0; x < fields.size(); ++x) {
+        for (size_t y = 0; y < fields[0].size(); ++y) {
             ss << boost::apply_visitor(ToCharVisitor{}, fields[x][y].element);
         }
         ss << '\n';
