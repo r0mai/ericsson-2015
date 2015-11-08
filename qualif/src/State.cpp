@@ -19,10 +19,10 @@ struct ToCharVisitor : boost::static_visitor<char> {
 std::string toString(const Fields& fields) {
     std::stringstream ss;
     for (const auto& row : fields) {
-    for (const auto& field : row) {
-        ss << boost::apply_visitor(ToCharVisitor{}, field.element);
-    }
-    ss << '\n';
+        for (const auto& field : row) {
+            ss << boost::apply_visitor(ToCharVisitor{}, field.element);
+        }
+        ss << '\n';
     }
     return ss.str();
 }
