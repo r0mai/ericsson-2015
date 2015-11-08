@@ -16,11 +16,16 @@ struct ToCharVisitor : boost::static_visitor<char> {
     char operator()(const boost::blank&) const { return ' '; }
 };
 
+std::ostream& operator<<(std::ostream& os, const Field& f) {
+    os << boost::apply_visitor(ToCharVisitor{}, f.element);
+    return os;
+}
+
 std::string toString(const Fields& fields) {
     std::stringstream ss;
-    for (size_t x = 0; x < fields.size(); ++x) {
-        for (size_t y = 0; y < fields[0].size(); ++y) {
-            ss << boost::apply_visitor(ToCharVisitor{}, fields[x][y].element);
+    for (size_t y = 0; y < fields[0].size(); ++y) {
+        for (size_t x = 0; x < fields.size(); ++x) {
+            ss << fields[x][y];
         }
         ss << '\n';
     }

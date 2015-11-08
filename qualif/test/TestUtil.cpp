@@ -11,6 +11,7 @@ FieldElement fieldElementFromChar(char ch) {
         case ' ': return {};
         case 'D': return Doc{};
         case 'L': return DeLorean{};
+        case 'C': return Chest{};
         default: assert(false); return {};
     }
 }

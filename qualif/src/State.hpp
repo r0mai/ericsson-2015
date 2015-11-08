@@ -21,6 +21,7 @@ struct State {
     boost::optional<std::string> error;
 };
 
+std::ostream& operator<<(std::ostream& os, const Field& f);
 std::string toString(const Fields& fields);
 
 std::string fromProto(protocol::Global::Error error);
