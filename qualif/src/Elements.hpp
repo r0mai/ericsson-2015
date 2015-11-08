@@ -11,55 +11,55 @@
 namespace bm {
 
 enum class Capability {
-	INCREASEMAXFLUXCAPATITOR,
-	INCREASEFLUXCAPATITORRADIUS,
-	DECREASEFLUXCAPATITORRADIUS,
-	INCREASEFLUXCAPATITORTIME,
-	DECREASEFLUXCAPATITORTIME,
-	DECREASEFLUXCAPATITORMAKING,
-	INCREASEENERGY,
-	KICKFLUXCAPATITOR,
-	THROWFLUXCAPATITOR
+    INCREASEMAXFLUXCAPATITOR,
+    INCREASEFLUXCAPATITORRADIUS,
+    DECREASEFLUXCAPATITORRADIUS,
+    INCREASEFLUXCAPATITORTIME,
+    DECREASEFLUXCAPATITORTIME,
+    DECREASEFLUXCAPATITORMAKING,
+    INCREASEENERGY,
+    KICKFLUXCAPATITOR,
+    THROWFLUXCAPATITOR
 };
 
 struct FluxCapatitor {
-	uint32_t id;
-	uint32_t time_to_activated;
-	uint32_t radius;
+    uint32_t id;
+    uint32_t time_to_activated;
+    uint32_t radius;
     boost::optional<uint32_t> timetravel_length;
 };
 
 struct FluxCapatitorInformations {
     boost::optional<uint32_t> next_done_time;
-	uint32_t making_time;
-	uint32_t max_flux_capatitors;
-	FluxCapatitor next_flux_capatitor;
+    uint32_t making_time;
+    uint32_t max_flux_capatitors;
+    FluxCapatitor next_flux_capatitor;
 };
 
 struct Doc {
-	uint32_t id;
-	uint32_t survive_timetravels;
+    uint32_t id;
+    uint32_t survive_timetravels;
     std::vector<FluxCapatitor> flux_capatitors;
-	FluxCapatitorInformations informations;
+    FluxCapatitorInformations informations;
     std::vector<Capability> capabilities;
 };
 
 struct Enemy {
-	uint32_t id;
-	uint32_t survive_timetravels;
-	uint32_t intelligence;
-	uint32_t radius;
+    uint32_t id;
+    uint32_t survive_timetravels;
+    uint32_t intelligence;
+    uint32_t radius;
 };
 
 struct Chest {
-	uint32_t id;
-	uint32_t survive_timetravels;
+    uint32_t id;
+    uint32_t survive_timetravels;
     boost::optional<Capability> capability;
 };
 
 struct DeLorean {
-	uint32_t id;
-	uint32_t survive_timetravels;
+    uint32_t id;
+    uint32_t survive_timetravels;
 };
 
 Capability fromProto(protocol::Capability c);
