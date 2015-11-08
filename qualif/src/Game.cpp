@@ -11,6 +11,10 @@ namespace bm {
 void Game::run() {
     protocol::Global global;
     while (readProtoFromStream(global, std::cin)) {
+        if (global.has_error()) {
+            std::cerr << "Error from last tick: " <<
+                fromProto(global.error()) << std::endl;
+        }
         currentState = fromProto(global);
         protocol::Response response = calculateResponse();
 
