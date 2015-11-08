@@ -17,6 +17,8 @@ public:
 
 //private: // disabled to avoid testing boiler plate
 
+    void initExtraState();
+
     // Returns none if no path is found
     boost::optional<protocol::Response> goToDelorean();
 
@@ -33,6 +35,8 @@ public:
     static constexpr unsigned kMaxTimeTravel = 6; //inclusive
 
     State currentState;
+    boost::optional<Point> docLocation;
+    boost::optional<Point> deLoreanLocation;
 };
 
 std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d);

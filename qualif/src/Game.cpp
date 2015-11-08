@@ -18,6 +18,10 @@ void Game::run() {
                 fromProto(global.error()) << std::endl;
         }
         currentState = fromProto(global);
+
+        std::cerr << "Info: Tick = " << currentState.tick << std::endl;
+        std::cerr << toString(currentState.fields) << std::endl;
+
         protocol::Response response = calculateResponse();
         if (!writeProtoOnStream(response, std::cout)) {
             std::cerr << "write error" << std::endl;
@@ -31,20 +35,16 @@ void Game::run() {
     std::cerr << "Game over, std::cin.eof(): " << std::cin.eof() << std::endl;
 }
 
+void Game::initExtraState() {
+    docLocation = findObject(ElementType::DOC);
+    deLoreanLocation = findObject(ElementType::DELOREAN);
+}
+
 boost::optional<protocol::Response> Game::goToDelorean() {
-    std::cerr << "Info: Tick = " << currentState.tick << std::endl;
-    std::cerr << toString(currentState.fields) << std::endl;
-
-    auto docLocation = findObject(ElementType::DOC);
-    auto deLoreanLocation = findObject(ElementType::DELOREAN);
-
     if (!docLocation || !deLoreanLocation) {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
         return boost::none;
     }
-
-    std::cerr << "Info: DocLocation = " << *docLocation << std::endl;
-    std::cerr << "Info: DeLoreanLocation = " << *deLoreanLocation << std::endl;
 
     auto path = getPathTo(*docLocation, *deLoreanLocation);
 
@@ -61,6 +61,8 @@ boost::optional<protocol::Response> Game::goToDelorean() {
 }
 
 protocol::Response Game::calculateResponse() {
+    initExtraState();
+
     auto gotoResponse = goToDelorean();
     if (gotoResponse) {
         return *gotoResponse;
