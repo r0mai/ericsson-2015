@@ -21,12 +21,16 @@ public:
 
     // Returns none if no path is found
     boost::optional<protocol::Response> goToDelorean();
+    boost::optional<protocol::Response> fireAFluxCapacitor();
 
-    std::vector<Point> getPathTo(const Point& from, const Point& to) const;
+    std::vector<Point> getPathTo(
+        const Point& from, const Point& to, bool throughChest = false) const;
     boost::optional<Point> findObject(ElementType type);
 
     protocol::Response::Direction getDirection(
         const Point& from, const Point& to);
+
+    boost::optional<Point> findBlankAround(const Point& p) const;
 
     protocol::Response calculateResponse();
 

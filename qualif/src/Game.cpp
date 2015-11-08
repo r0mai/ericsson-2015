@@ -60,6 +60,56 @@ boost::optional<protocol::Response> Game::goToDelorean() {
     return helper.getResponse();
 }
 
+boost::optional<protocol::Response> Game::fireAFluxCapacitor() {
+    if (!docLocation || !deLoreanLocation) {
+        std::cerr << "Error: doc and/or delorean missing" << std::endl;
+        return boost::none;
+    }
+
+    const Doc& doc = boost::get<Doc>(
+        currentState.fields[docLocation->x][docLocation->y].element);
+
+    auto path = getPathTo(*docLocation, *deLoreanLocation, true);
+    if (path.empty()) {
+        std::cerr << "Error: no path to delorean (with chests)" << std::endl;
+        return boost::none;
+    }
+
+    auto next = path[0];
+    if (path.size() > 1) {
+        auto nextnext = path[1];
+        if (isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::BLANK) &&
+            isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::CHEST))
+        {
+            auto useDirection = getDirection(*docLocation, next);
+            ResponseHelper helper;
+            helper.put(useDirection, doc.flux_capatitors.front().id, kMinTimeTravel);
+            return helper.getResponse();
+        }
+
+    }
+    if (isFieldElementA(currentState.fields[next.x][next.y].element, ElementType::CHEST)) {
+        if (doc.flux_capatitors.empty()) {
+            std::cerr << "Error: no flux capacitors" << std::endl;
+            return boost::none;
+        }
+        auto blankSpot = findBlankAround(*docLocation);
+        if (!blankSpot) {
+            std::cerr << "Error: No blank spot around Doc" << std::endl;
+            return boost::none;
+        }
+        auto useDirection = getDirection(*docLocation, *blankSpot);
+        ResponseHelper helper;
+        helper.put(useDirection, doc.flux_capatitors.front().id, kMinTimeTravel);
+        return helper.getResponse();
+    } else {
+        auto direction = getDirection(*docLocation, next);
+        ResponseHelper helper;
+        helper.move(direction);
+        return helper.getResponse();
+    }
+}
+
 protocol::Response Game::calculateResponse() {
     initExtraState();
 
@@ -104,8 +154,27 @@ protocol::Response::Direction Game::getDirection(
     return protocol::Response::DOWN;
 }
 
+boost::optional<Point> Game::findBlankAround(const Point& p) const {
+    std::array<Point, 4> adjacents = {{
+        {p.x + 1, p.y},
+        {p.x - 1, p.y},
+        {p.x, p.y + 1},
+        {p.x, p.y - 1},
+    }};
+    for (auto k : adjacents) {
+        if (isFieldElementA(currentState.fields[k.x][k.y].element, ElementType::BLANK) ||
+            isFieldElementA(currentState.fields[k.x][k.y].element, ElementType::CAPABILITY))
+        {
+            return k;
+        }
+    }
+    return boost::none;
+}
+
 // simple BFS
-std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
+std::vector<Point> Game::getPathTo(
+    const Point& from, const Point& to, bool throughChest) const
+{
     auto parentMatrix = createMatrixWithShape<Point>(
         currentState.fields, Point(-1, -1));
     auto distanceMatrix = createMatrixWithShape<int>(
@@ -150,13 +219,26 @@ std::vector<Point> Game::getPathTo(const Point& from, const Point& to) const {
                 {
                     continue;
                 }
-                if (!isFieldElementA(
+                if (isFieldElementA(
                         currentState.fields[p.x][p.y].element,
                         ElementType::BLANK))
                 {
-                    continue;
+                    goto use_it;
+                }
+                if (isFieldElementA(
+                        currentState.fields[p.x][p.y].element,
+                        ElementType::CAPABILITY))
+                {
+                    goto use_it;
+                }
+                if (throughChest && isFieldElementA(
+                        currentState.fields[p.x][p.y].element,
+                        ElementType::CHEST))
+                {
+                    goto use_it;
                 }
             }
+use_it:
             todo.push(p);
             distanceMatrix[p.x][p.y] = distanceMatrix[current.x][current.y] + 1;
             parentMatrix[p.x][p.y] = current;
