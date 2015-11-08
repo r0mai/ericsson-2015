@@ -11,6 +11,7 @@ namespace bm {
 void Game::run() {
     protocol::Global global;
     while (readProtoFromStream(global, std::cin)) {
+        auto start = std::chrono::system_clock::now();
         if (global.has_error()) {
             std::cerr << "Error from last tick: " <<
                 fromProto(global.error()) << std::endl;
@@ -22,6 +23,10 @@ void Game::run() {
             std::cerr << "write error" << std::endl;
             break;
         }
+        auto end = std::chrono::system_clock::now();
+        std::chrono::duration<double> diff = end - start;
+
+        std::cerr << "Tick took " << diff.count() * 1000 << "ms" << std::endl;
     }
     std::cerr << "Game over, std::cin.eof(): " << std::cin.eof() << std::endl;
 }
