@@ -30,7 +30,7 @@ FluxCapatitor fromProto(const protocol::FluxCapatitor& fc) {
     FluxCapatitor res;
     res.id = fc.id();
     res.time_to_activated = fc.time_to_activated();
-    res.radius = fc.time_to_activated();
+    res.radius = fc.radius();
     if (fc.has_timetravel_length()) {
 	res.timetravel_length = fc.timetravel_length();
     }
