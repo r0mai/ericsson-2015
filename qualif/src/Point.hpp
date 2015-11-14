@@ -1,6 +1,7 @@
 #ifndef POINT_HPP
 #define POINT_HPP
 
+#include <array>
 #include <ostream>
 
 #include "Response.pb.h"
@@ -14,15 +15,9 @@ struct Point {
     int x = 0;
     int y = 0;
 
-    Point moveTo(protocol::Response::Direction d) {
-        switch (d) {
-            case protocol::Response::DOWN: return Point(x, y + 1);
-            case protocol::Response::UP: return Point(x, y - 1);
-            case protocol::Response::RIGHT: return Point(x + 1, y);
-            case protocol::Response::LEFT: return Point(x - 1, y);
-        }
-        return *this;
-    }
+    Point moveTo(protocol::Response::Direction d);
+
+    std::array<Point, 4> getAdjacents() const;
 };
 
 inline

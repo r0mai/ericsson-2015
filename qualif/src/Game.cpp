@@ -168,12 +168,8 @@ protocol::Response::Direction Game::getDirection(
 }
 
 boost::optional<Point> Game::findBlankAround(const Point& p) const {
-    std::array<Point, 4> adjacents = {{
-        {p.x + 1, p.y},
-        {p.x - 1, p.y},
-        {p.x, p.y + 1},
-        {p.x, p.y - 1},
-    }};
+    auto adjacents = p.getAdjacents();
+
     for (auto k : adjacents) {
         if (currentState.fields[k.x][k.y].is(ElementType::BLANK) ||
             currentState.fields[k.x][k.y].is(ElementType::CAPABILITY))
@@ -216,12 +212,7 @@ std::vector<Point> Game::getPathTo(
             return path;
         }
 
-        std::array<Point, 4> adjacents = {{
-            {current.x + 1, current.y},
-            {current.x - 1, current.y},
-            {current.x, current.y + 1},
-            {current.x, current.y - 1},
-        }};
+        auto adjacents = current.getAdjacents();
         for (const Point& p : adjacents) {
             if (p != to) {
                 if (distanceMatrix[p.x][p.y] != -1) {
