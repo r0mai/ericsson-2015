@@ -200,7 +200,7 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_1) {
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::RIGHT);
     JUST_ASSERT_EQUAL(response->flux_capatitor_id(), 1123);
-    JUST_ASSERT_EQUAL(response->flux_capatitor_time(), 2);
+    JUST_ASSERT_EQUAL(response->flux_capatitor_time(), 6);
 }
 
 JUST_TEST_CASE(Game_gotoDeloreanWithChests_2) {
