@@ -43,6 +43,8 @@ struct Field {
     }
 
     bool is(ElementType type) const;
+
+    bool isBlocker() const;
 };
 
 ElementType fromProto(protocol::Field::ElementType et);

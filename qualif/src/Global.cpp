@@ -22,6 +22,10 @@ bool Field::is(ElementType type) const {
     return boost::apply_visitor(IsAVisitor{type}, element);
 }
 
+bool Field::isBlocker() const {
+    return is<Wall>() || is<Chest>() || is<DeLorean>();
+}
+
 ElementType fromProto(protocol::Field::ElementType et) {
     switch (et) {
         case protocol::Field::FLUXCAPATITOR:
