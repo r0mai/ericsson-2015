@@ -354,3 +354,36 @@ JUST_TEST_CASE(Game_timeUntilTimeTravel_3) {
     JUST_ASSERT(!bool(game.state.at(8, 3).timeUntilTimeTravel));
     JUST_ASSERT(!bool(game.state.at(6, 1).timeUntilTimeTravel));
 }
+
+JUST_TEST_CASE(Game_goToASafeSpot_1) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "WDFC    C C C LW",
+        "W  W           W",
+        "WWWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    JUST_ASSERT(game.state.at(2, 1).is<FluxCapatitor>());
+
+    auto& fc = game.state.at(2, 1).as<FluxCapatitor>();
+    fc.radius = 5;
+    fc.time_to_activated = 2;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(1, 1).timeUntilTimeTravel, 2);
+    JUST_ASSERT_EQUAL(game.state.at(1, 2).timeUntilTimeTravel, boost::none);
+
+    auto response = game.goToASafeSpot();
+    JUST_ASSERT(bool(response));
+
+    JUST_ASSERT(response->has_command());
+    JUST_ASSERT(response->has_direction());
+    JUST_ASSERT(!response->has_flux_capatitor_id());
+    JUST_ASSERT(!response->has_flux_capatitor_time());
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::DOWN);
+}

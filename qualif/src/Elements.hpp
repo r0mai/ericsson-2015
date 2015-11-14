@@ -25,7 +25,7 @@ enum class Capability {
 struct FluxCapatitor {
     uint32_t id;
     uint32_t time_to_activated;
-    uint32_t radius;
+    int radius;
     boost::optional<uint32_t> timetravel_length;
 };
 
@@ -48,7 +48,7 @@ struct Enemy {
     uint32_t id;
     uint32_t survive_timetravels;
     uint32_t intelligence;
-    uint32_t radius;
+    int radius;
 };
 
 struct Chest {

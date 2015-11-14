@@ -265,15 +265,14 @@ boost::optional<Point> Game::findSafeSpotNear(const Point& from) const {
         Point current = todo.front();
         todo.pop();
 
-        if (!state.at(current).isSteppable()) {
-           continue;
-        }
         if (!state.at(current).timeUntilTimeTravel) {
             return current;
         }
         auto adjacents = current.getAdjacents();
         for (const Point& p : adjacents) {
-            todo.push(p);
+            if (state.at(p).isSteppable()) {
+                todo.push(p);
+            }
         }
     }
 
