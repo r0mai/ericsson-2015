@@ -60,7 +60,7 @@ void Game::initTimeUntilTimeTravelAt(const Point& p) {
     auto radius = fc.radius;
 
     for (int x = p.x;
-        x < state.width && x <= p.x + radius && !state.at(x, p.y).isBlocker();++x) {
+        x < state.width && x <= p.x + radius && !state.at(x, p.y).isBlocker(); ++x) {
         state.at(x, p.y).setTimeUntilTimeTravel(time);
     }
     for (int x = p.x;
