@@ -318,7 +318,7 @@ JUST_TEST_CASE(Game_timeUntilTimeTravel_2) {
 JUST_TEST_CASE(Game_timeUntilTimeTravel_3) {
     State state = stateFromString({
         "WWWWWWWWWWWWWWWW",
-        "W        F     W",
+        "W       DF     W",
         "W       F W    W",
         "WWWWWWWWWWWWWWWW",
     });
