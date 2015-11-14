@@ -254,3 +254,34 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_3) {
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::RIGHT);
 }
+
+JUST_TEST_CASE(Game_timeUntilTimeTravel_1) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "W       F      W",
+        "WWWWWWWWWWWWWWWW",
+    });
+
+    JUST_ASSERT(state.at(8, 1).is<FluxCapatitor>());
+
+
+    Game game;
+    game.state = state;
+
+    auto& fc = game.state.at(8, 1).as<FluxCapatitor>();
+    fc.radius = 2;
+    fc.time_to_activated = 3;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(10, 1).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(9, 1).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(8, 1).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(7, 1).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(6, 1).timeUntilTimeTravel, 3);
+
+    JUST_ASSERT(!bool(game.state.at(11, 1).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(5, 1).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(8, 0).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(8, 2).timeUntilTimeTravel));
+}

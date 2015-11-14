@@ -59,16 +59,20 @@ void Game::initTimeUntilTimeTravelAt(const Point& p) {
     auto time = fc.time_to_activated;
     auto radius = fc.radius;
 
-    for (int x = p.x; x < state.width && !state.at(x, p.y).isBlocker(); ++x) {
+    for (int x = p.x;
+        x < state.width && x <= p.x + radius && !state.at(x, p.y).isBlocker();++x) {
         state.at(x, p.y).setTimeUntilTimeTravel(time);
     }
-    for (int x = p.x; x >= 0 && !state.at(x, p.y).isBlocker(); --x) {
+    for (int x = p.x;
+        x >= 0 && x >= p.x - radius && !state.at(x, p.y).isBlocker(); --x) {
         state.at(x, p.y).setTimeUntilTimeTravel(time);
     }
-    for (int y = p.y; y < state.height && !state.at(p.x, y).isBlocker(); ++y) {
+    for (int y = p.y;
+        y < state.height && y < p.y + radius && !state.at(p.x, y).isBlocker(); ++y) {
         state.at(p.x, y).setTimeUntilTimeTravel(time);
     }
-    for (int y = p.y; y >= 0 && !state.at(p.x, y).isBlocker(); --y) {
+    for (int y = p.y;
+        y >= 0 && y >= p.y - radius && !state.at(p.x, y).isBlocker(); --y) {
         state.at(p.x, y).setTimeUntilTimeTravel(time);
     }
 }
