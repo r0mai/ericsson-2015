@@ -18,6 +18,9 @@ public:
 //private: // disabled to avoid testing boiler plate
 
     void initExtraState();
+    void initSpecialPositions();
+    void initTimeUntilTimeTravelAt(const Point& p);
+    void initTimeUntilTimeTravel();
 
     // Returns none if no path is found
     boost::optional<protocol::Response> goToDelorean();
@@ -38,7 +41,7 @@ public:
     static constexpr unsigned kMinTimeTravel = 2; //inclusive
     static constexpr unsigned kMaxTimeTravel = 6; //inclusive
 
-    State currentState;
+    State state;
     boost::optional<Point> docLocation;
     boost::optional<Point> deLoreanLocation;
     Doc doc;

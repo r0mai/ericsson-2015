@@ -15,7 +15,7 @@ JUST_TEST_CASE(Game_findObject) {
     });
 
     Game game;
-    game.currentState = state;
+    game.state = state;
 
     JUST_ASSERT_EQUAL(game.findObject(ElementType::DOC), Point(1, 1));
     JUST_ASSERT_EQUAL(game.findObject(ElementType::DELOREAN), Point(14, 1));
@@ -29,7 +29,7 @@ JUST_TEST_CASE(Game_getPath_simple_corridor) {
     });
 
     Game game;
-    game.currentState = state;
+    game.state = state;
 
     Point docLocation = *game.findObject(ElementType::DOC);
     Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
@@ -61,7 +61,7 @@ JUST_TEST_CASE(Game_getPath_next_to_each_other) {
     });
 
     Game game;
-    game.currentState = state;
+    game.state = state;
 
     Point docLocation = *game.findObject(ElementType::DOC);
     Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
@@ -118,7 +118,7 @@ JUST_TEST_CASE(Game_getPath_real_map) {
     });
 
     Game game;
-    game.currentState = state;
+    game.state = state;
 
     Point docLocation = *game.findObject(ElementType::DOC);
     Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
@@ -152,7 +152,7 @@ JUST_TEST_CASE(Game_getPath_simple_corridor_with_Chests) {
     });
 
     Game game;
-    game.currentState = state;
+    game.state = state;
 
     Point docLocation = *game.findObject(ElementType::DOC);
     Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
@@ -186,7 +186,7 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_1) {
     fc.id = 1123;
 
     Game game;
-    game.currentState = state;
+    game.state = state;
     game.initExtraState();
     game.doc.flux_capatitors.push_back(fc);
 
@@ -213,7 +213,7 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_2) {
     fc.id = 1123;
 
     Game game;
-    game.currentState = state;
+    game.state = state;
     game.initExtraState();
     game.doc.flux_capatitors.push_back(fc);
 
@@ -240,7 +240,7 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_3) {
     fc.id = 1123;
 
     Game game;
-    game.currentState = state;
+    game.state = state;
     game.initExtraState();
     game.doc.flux_capatitors.push_back(fc);
 

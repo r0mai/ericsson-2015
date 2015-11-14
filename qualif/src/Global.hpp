@@ -44,7 +44,24 @@ struct Field {
 
     bool is(ElementType type) const;
 
+    template<class T>
+    T& as() {
+        assert(is<T>());
+        return boost::get<T>(element);
+    }
+
+    template<class T>
+    const T& as() const {
+        assert(is<T>());
+        return boost::get<T>(element);
+    }
+
     bool isBlocker() const;
+
+    void setTimeUntilTimeTravel(int new_value);
+
+    // Extra:
+    boost::optional<int> timeUntilTimeTravel;
 };
 
 ElementType fromProto(protocol::Field::ElementType et);

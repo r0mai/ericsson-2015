@@ -26,6 +26,12 @@ bool Field::isBlocker() const {
     return is<Wall>() || is<Chest>() || is<DeLorean>();
 }
 
+void Field::setTimeUntilTimeTravel(int new_value) {
+    if (!timeUntilTimeTravel || *timeUntilTimeTravel > new_value) {
+        timeUntilTimeTravel = new_value;
+    }
+}
+
 ElementType fromProto(protocol::Field::ElementType et) {
     switch (et) {
         case protocol::Field::FLUXCAPATITOR:

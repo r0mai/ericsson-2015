@@ -17,10 +17,10 @@ void Game::run() {
             std::cerr << "Error from last tick: " <<
                 fromProto(global.error()) << std::endl;
         }
-        currentState = fromProto(global);
+        state = fromProto(global);
 
-        std::cerr << "Info: Tick = " << currentState.tick << std::endl;
-        std::cerr << toString(currentState.fields) << std::endl;
+        std::cerr << "Info: Tick = " << state.tick << std::endl;
+        std::cerr << toString(state.fields) << std::endl;
 
         protocol::Response response = calculateResponse();
         if (!writeProtoOnStream(response, std::cout)) {
@@ -36,15 +36,50 @@ void Game::run() {
 }
 
 void Game::initExtraState() {
+    initSpecialPositions();
+    initTimeUntilTimeTravel();
+}
+
+void Game::initSpecialPositions() {
     docLocation = findObject(ElementType::DOC);
     deLoreanLocation = findObject(ElementType::DELOREAN);
 
     if (docLocation) {
-        doc = boost::get<Doc>(currentState.at(*docLocation).element);
+        doc = state.at(*docLocation).as<Doc>();
     }
     if (deLoreanLocation) {
-        deLorean = boost::get<DeLorean>(
-            currentState.at(*deLoreanLocation).element);
+        deLorean = state.at(*deLoreanLocation).as<DeLorean>();
+    }
+}
+
+void Game::initTimeUntilTimeTravelAt(const Point& p) {
+    assert(state.at(p).is<FluxCapatitor>());
+
+    auto& fc = state.at(p).as<FluxCapatitor>();
+    auto time = fc.time_to_activated;
+    auto radius = fc.radius;
+
+    for (int x = p.x; x < state.width && !state.at(x, p.y).isBlocker(); ++x) {
+        state.at(x, p.y).setTimeUntilTimeTravel(time);
+    }
+    for (int x = p.x; x >= 0 && !state.at(x, p.y).isBlocker(); --x) {
+        state.at(x, p.y).setTimeUntilTimeTravel(time);
+    }
+    for (int y = p.y; y < state.height && !state.at(p.x, y).isBlocker(); ++y) {
+        state.at(p.x, y).setTimeUntilTimeTravel(time);
+    }
+    for (int y = p.y; y >= 0 && !state.at(p.x, y).isBlocker(); --y) {
+        state.at(p.x, y).setTimeUntilTimeTravel(time);
+    }
+}
+
+void Game::initTimeUntilTimeTravel() {
+    for (size_t x = 0; x < state.fields.size(); ++x) {
+        for (size_t y = 0; y < state.fields[0].size(); ++y) {
+            if (state.at(x, y).is<FluxCapatitor>()) {
+                initTimeUntilTimeTravelAt(Point(x, y));
+            }
+        }
     }
 }
 
@@ -83,8 +118,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     auto next = path[0];
     if (path.size() > 1) {
         auto nextnext = path[1];
-        if (currentState.at(next).is(ElementType::BLANK) &&
-            currentState.at(nextnext).is(ElementType::CHEST))
+        if (state.at(next).is(ElementType::BLANK) &&
+            state.at(nextnext).is(ElementType::CHEST))
         {
             auto useDirection = getDirection(*docLocation, next);
             ResponseHelper helper;
@@ -93,7 +128,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         }
 
     }
-    if (currentState.at(next).is(ElementType::CHEST)) {
+    if (state.at(next).is(ElementType::CHEST)) {
         if (doc.flux_capatitors.empty()) {
             std::cerr << "Error: no flux capacitors" << std::endl;
             return boost::none;
@@ -136,9 +171,9 @@ protocol::Response Game::calculateResponse() {
 }
 
 boost::optional<Point> Game::findObject(ElementType type) {
-    for (size_t x = 0; x < currentState.fields.size(); ++x) {
-        for (size_t y = 0; y < currentState.fields[0].size(); ++y) {
-            if (currentState.at(x, y).is(type)) {
+    for (size_t x = 0; x < state.fields.size(); ++x) {
+        for (size_t y = 0; y < state.fields[0].size(); ++y) {
+            if (state.at(x, y).is(type)) {
                 return Point(x, y);
             }
         }
@@ -170,8 +205,8 @@ boost::optional<Point> Game::findBlankAround(const Point& p) const {
     auto adjacents = p.getAdjacents();
 
     for (auto k : adjacents) {
-        if (currentState.at(k).is(ElementType::BLANK) ||
-            currentState.at(k).is(ElementType::CAPABILITY))
+        if (state.at(k).is(ElementType::BLANK) ||
+            state.at(k).is(ElementType::CAPABILITY))
         {
             return k;
         }
@@ -184,9 +219,9 @@ std::vector<Point> Game::getPathTo(
     const Point& from, const Point& to, bool throughChest) const
 {
     auto parentMatrix = createMatrixWithShape<Point>(
-        currentState.fields, Point(-1, -1));
+        state.fields, Point(-1, -1));
     auto distanceMatrix = createMatrixWithShape<int>(
-        currentState.fields, -1);
+        state.fields, -1);
 
     std::queue<Point> todo;
 
@@ -217,19 +252,19 @@ std::vector<Point> Game::getPathTo(
                 if (distanceMatrix[p.x][p.y] != -1) {
                     continue;
                 }
-                if (p.x < 0 || p.x >= int(currentState.width) ||
-                    p.y < 0 || p.y >= int(currentState.height))
+                if (p.x < 0 || p.x >= int(state.width) ||
+                    p.y < 0 || p.y >= int(state.height))
                 {
                     continue;
                 }
-                if (currentState.at(p).is(ElementType::BLANK)) {
+                if (state.at(p).is(ElementType::BLANK)) {
                     goto use_it;
                 }
-                if (currentState.at(p).is(ElementType::CAPABILITY)) {
+                if (state.at(p).is(ElementType::CAPABILITY)) {
                     goto use_it;
                 }
                 if (throughChest &&
-                    currentState.at(p).is(ElementType::CHEST))
+                    state.at(p).is(ElementType::CHEST))
                 {
                     goto use_it;
                 }
