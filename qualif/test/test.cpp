@@ -285,3 +285,74 @@ JUST_TEST_CASE(Game_timeUntilTimeTravel_1) {
     JUST_ASSERT(!bool(game.state.at(8, 0).timeUntilTimeTravel));
     JUST_ASSERT(!bool(game.state.at(8, 2).timeUntilTimeTravel));
 }
+
+JUST_TEST_CASE(Game_timeUntilTimeTravel_2) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "W              W",
+        "W       F W    W",
+        "WWWWWWWWWWWWWWWW",
+    });
+
+    JUST_ASSERT(state.at(8, 2).is<FluxCapatitor>());
+
+
+    Game game;
+    game.state = state;
+
+    auto& fc = game.state.at(8, 2).as<FluxCapatitor>();
+    fc.radius = 2;
+    fc.time_to_activated = 3;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(9, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(8, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(7, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(6, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(8, 1).timeUntilTimeTravel, 3);
+
+    JUST_ASSERT(!bool(game.state.at(10, 2).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(5, 2).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(8, 3).timeUntilTimeTravel));
+}
+
+JUST_TEST_CASE(Game_timeUntilTimeTravel_3) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "W        F     W",
+        "W       F W    W",
+        "WWWWWWWWWWWWWWWW",
+    });
+
+    JUST_ASSERT(state.at(8, 2).is<FluxCapatitor>());
+    JUST_ASSERT(state.at(9, 1).is<FluxCapatitor>());
+
+    Game game;
+    game.state = state;
+
+    auto& fc1 = game.state.at(8, 2).as<FluxCapatitor>();
+    auto& fc2 = game.state.at(9, 1).as<FluxCapatitor>();
+
+    fc1.radius = 2;
+    fc1.time_to_activated = 3;
+
+    fc2.radius = 2;
+    fc2.time_to_activated = 1;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(7, 1).timeUntilTimeTravel, 1);
+    JUST_ASSERT_EQUAL(game.state.at(11, 1).timeUntilTimeTravel, 1);
+    JUST_ASSERT_EQUAL(game.state.at(10, 1).timeUntilTimeTravel, 1);
+    JUST_ASSERT_EQUAL(game.state.at(9, 2).timeUntilTimeTravel, 1);
+    JUST_ASSERT_EQUAL(game.state.at(8, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(7, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(6, 2).timeUntilTimeTravel, 3);
+    JUST_ASSERT_EQUAL(game.state.at(8, 1).timeUntilTimeTravel, 1);
+
+    JUST_ASSERT(!bool(game.state.at(10, 2).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(5, 2).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(8, 3).timeUntilTimeTravel));
+    JUST_ASSERT(!bool(game.state.at(6, 1).timeUntilTimeTravel));
+}
