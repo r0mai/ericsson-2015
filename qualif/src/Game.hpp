@@ -25,6 +25,7 @@ public:
     // Returns none if no path is found
     boost::optional<protocol::Response> goToDelorean();
     boost::optional<protocol::Response> goToDeloreanThroughChests();
+    boost::optional<protocol::Response> goToASafeSpot();
 
     std::vector<Point> getPathTo(
         const Point& from, const Point& to, bool throughChest = false) const;

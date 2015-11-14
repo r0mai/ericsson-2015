@@ -88,6 +88,7 @@ void Game::initTimeUntilTimeTravel() {
 }
 
 boost::optional<protocol::Response> Game::goToDelorean() {
+    std::cerr << "goToDelorean()" << std::endl;
     if (!docLocation || !deLoreanLocation) {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
         return boost::none;
@@ -108,6 +109,7 @@ boost::optional<protocol::Response> Game::goToDelorean() {
 }
 
 boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
+    std::cerr << "goToDeloreanThroughChests()" << std::endl;
     if (!docLocation || !deLoreanLocation) {
         std::cerr << "Error: doc and/or delorean missing" << std::endl;
         return boost::none;
@@ -154,8 +156,27 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     }
 }
 
+boost::optional<protocol::Response> Game::goToASafeSpot() {
+    std::cerr << "goToASafeSpot()" << std::endl;
+    return boost::none;
+}
+
 protocol::Response Game::calculateResponse() {
     initExtraState();
+
+    if (!docLocation) {
+        std::cerr << "Doc not found, so returning nothing()" << std::endl;
+        ResponseHelper helper;
+        helper.nothing();
+        return helper.getResponse();
+    }
+
+    if (state.at(*docLocation).timeUntilTimeTravel) {
+        auto safeSpotResponse = goToASafeSpot();
+        if (safeSpotResponse) {
+            return *safeSpotResponse;
+        }
+    }
 
     if (doc.survive_timetravels > 0) {
         auto fluxCapatitorResponse = goToDeloreanThroughChests();
