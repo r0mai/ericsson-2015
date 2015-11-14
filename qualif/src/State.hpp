@@ -4,6 +4,8 @@
 #include <string>
 #include <cstdint>
 
+#include "Point.hpp"
+
 #include "Global.pb.h"
 #include "Global.hpp"
 
@@ -19,6 +21,12 @@ struct State {
     Fields fields;
 
     boost::optional<std::string> error;
+
+    Field& at(const Point& p);
+    const Field& at(const Point& p) const;
+
+    Field& at(int x, int y);
+    const Field& at(int x, int y) const;
 };
 
 std::ostream& operator<<(std::ostream& os, const Field& f);

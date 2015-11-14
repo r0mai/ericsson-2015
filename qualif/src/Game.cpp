@@ -40,12 +40,11 @@ void Game::initExtraState() {
     deLoreanLocation = findObject(ElementType::DELOREAN);
 
     if (docLocation) {
-        doc = boost::get<Doc>(
-            currentState.fields[docLocation->x][docLocation->y].element);
+        doc = boost::get<Doc>(currentState.at(*docLocation).element);
     }
     if (deLoreanLocation) {
         deLorean = boost::get<DeLorean>(
-            currentState.fields[deLoreanLocation->x][deLoreanLocation->y].element);
+            currentState.at(*deLoreanLocation).element);
     }
 }
 
@@ -84,8 +83,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     auto next = path[0];
     if (path.size() > 1) {
         auto nextnext = path[1];
-        if (currentState.fields[next.x][next.y].is(ElementType::BLANK) &&
-            currentState.fields[nextnext.x][nextnext.y].is(ElementType::CHEST))
+        if (currentState.at(next).is(ElementType::BLANK) &&
+            currentState.at(nextnext).is(ElementType::CHEST))
         {
             auto useDirection = getDirection(*docLocation, next);
             ResponseHelper helper;
@@ -94,7 +93,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         }
 
     }
-    if (currentState.fields[next.x][next.y].is(ElementType::CHEST)) {
+    if (currentState.at(next).is(ElementType::CHEST)) {
         if (doc.flux_capatitors.empty()) {
             std::cerr << "Error: no flux capacitors" << std::endl;
             return boost::none;
@@ -139,7 +138,7 @@ protocol::Response Game::calculateResponse() {
 boost::optional<Point> Game::findObject(ElementType type) {
     for (size_t x = 0; x < currentState.fields.size(); ++x) {
         for (size_t y = 0; y < currentState.fields[0].size(); ++y) {
-            if (currentState.fields[x][y].is(type)) {
+            if (currentState.at(x, y).is(type)) {
                 return Point(x, y);
             }
         }
@@ -171,8 +170,8 @@ boost::optional<Point> Game::findBlankAround(const Point& p) const {
     auto adjacents = p.getAdjacents();
 
     for (auto k : adjacents) {
-        if (currentState.fields[k.x][k.y].is(ElementType::BLANK) ||
-            currentState.fields[k.x][k.y].is(ElementType::CAPABILITY))
+        if (currentState.at(k).is(ElementType::BLANK) ||
+            currentState.at(k).is(ElementType::CAPABILITY))
         {
             return k;
         }
@@ -223,14 +222,14 @@ std::vector<Point> Game::getPathTo(
                 {
                     continue;
                 }
-                if (currentState.fields[p.x][p.y].is(ElementType::BLANK)) {
+                if (currentState.at(p).is(ElementType::BLANK)) {
                     goto use_it;
                 }
-                if (currentState.fields[p.x][p.y].is(ElementType::CAPABILITY)) {
+                if (currentState.at(p).is(ElementType::CAPABILITY)) {
                     goto use_it;
                 }
                 if (throughChest &&
-                    currentState.fields[p.x][p.y].is(ElementType::CHEST))
+                    currentState.at(p).is(ElementType::CHEST))
                 {
                     goto use_it;
                 }

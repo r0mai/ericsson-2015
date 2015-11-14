@@ -5,6 +5,32 @@
 
 namespace bm {
 
+Field& State::at(const Point& p) {
+    return at(p.x, p.y);
+}
+
+const Field& State::at(const Point& p) const {
+    return at(p.x, p.y);
+}
+
+Field& State::at(int x, int y) {
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < width);
+    assert(y < height);
+
+    return fields[x][y];
+}
+
+const Field& State::at(int x, int y) const {
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < width);
+    assert(y < height);
+
+    return fields[x][y];
+}
+
 struct ToCharVisitor : boost::static_visitor<char> {
     char operator()(const FluxCapatitor&) const { return 'F'; }
     char operator()(const Doc&) const { return 'D'; }
