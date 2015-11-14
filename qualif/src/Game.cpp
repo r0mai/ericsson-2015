@@ -135,18 +135,16 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 
     }
     if (state.at(next).is(ElementType::CHEST)) {
-        if (doc.flux_capatitors.empty()) {
-            std::cerr << "Error: no flux capacitors" << std::endl;
-            return boost::none;
-        }
+        // We have to move back
+        // FIXME this might (?) get it into infinite loop
         auto blankSpot = findBlankAround(*docLocation);
         if (!blankSpot) {
             std::cerr << "Error: No blank spot around Doc" << std::endl;
             return boost::none;
         }
-        auto useDirection = getDirection(*docLocation, *blankSpot);
+        auto moveDirection = getDirection(*docLocation, *blankSpot);
         ResponseHelper helper;
-        helper.put(useDirection, doc.flux_capatitors.front().id, kMinTimeTravel);
+        helper.move(moveDirection);
         return helper.getResponse();
     } else {
         auto direction = getDirection(*docLocation, next);
