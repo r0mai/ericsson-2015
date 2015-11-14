@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <ostream>
 
 #include <boost/optional.hpp>
 
@@ -28,6 +29,8 @@ struct FluxCapatitor {
     int radius;
     boost::optional<uint32_t> timetravel_length;
 };
+
+std::ostream& operator<<(std::ostream& os, const FluxCapatitor& fc);
 
 struct FluxCapatitorInformations {
     boost::optional<uint32_t> next_done_time;

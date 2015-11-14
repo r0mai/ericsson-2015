@@ -127,9 +127,18 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         if (state.at(next).is(ElementType::BLANK) &&
             state.at(nextnext).is(ElementType::CHEST))
         {
+            std::cerr << "Chest in way will survive "
+                << state.at(nextnext).as<Chest>().survive_timetravels
+                << " more time travels" << std::endl;
+
             auto useDirection = getDirection(*docLocation, next);
+
+            std::cerr << "Avaliable fluxes:" << std::endl;
+            for (auto& fc : doc.flux_capatitors) {
+                std::cerr << fc << std::endl;
+            }
             ResponseHelper helper;
-            helper.put(useDirection, doc.flux_capatitors.front().id, kMinTimeTravel);
+            helper.put(useDirection, doc.flux_capatitors.front().id, kMaxTimeTravel);
             return helper.getResponse();
         }
 

@@ -1,6 +1,16 @@
 #include "Elements.hpp"
 
+#include <boost/optional/optional_io.hpp>
+
 namespace bm {
+
+std::ostream& operator<<(std::ostream& os, const FluxCapatitor& fc) {
+    os << "flux(id = " << fc.id
+        << ", radius = " << fc.radius
+        << ", time_to_activated = " << fc.time_to_activated
+        << ", timetravel_length = " << fc.timetravel_length;
+    return os;
+}
 
 Capability fromProto(protocol::Capability c) {
     switch (c) {
