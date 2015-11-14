@@ -137,8 +137,15 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
             for (auto& fc : doc.flux_capatitors) {
                 std::cerr << fc << std::endl;
             }
+            if (doc.flux_capatitors.empty()) {
+                std::cerr << "No fluxes" << std::endl;
+                return boost::none;
+            }
+
+            auto& best_fc = minRadiusFluxCapacitor(doc.flux_capatitors);
+
             ResponseHelper helper;
-            helper.put(useDirection, doc.flux_capatitors.front().id, kMaxTimeTravel);
+            helper.put(useDirection, best_fc.id, kMaxTimeTravel);
             return helper.getResponse();
         }
 
@@ -263,6 +270,21 @@ boost::optional<Point> Game::findBlankAround(const Point& p) const {
         }
     }
     return boost::none;
+}
+
+const FluxCapatitor& Game::minRadiusFluxCapacitor(
+    const std::vector<FluxCapatitor>& fcs)
+{
+    assert(!fcs.empty());
+
+    const FluxCapatitor* best = &fcs.front();
+
+    for (int i = 1; i < fcs.size(); ++i) {
+        if (best->radius > fcs[i].radius) {
+            best = &fcs[i];
+        }
+    }
+    return *best;
 }
 
 boost::optional<Point> Game::findSafeSpotNear(const Point& from) const {

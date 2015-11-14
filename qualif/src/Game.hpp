@@ -36,6 +36,9 @@ public:
 
     boost::optional<Point> findBlankAround(const Point& p) const;
 
+    const FluxCapatitor& minRadiusFluxCapacitor(
+        const std::vector<FluxCapatitor>& fcs);
+
     // safe spot means that spot won't timetravel
     boost::optional<Point> findSafeSpotNear(const Point& from) const;
 
