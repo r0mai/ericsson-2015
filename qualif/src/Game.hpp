@@ -36,6 +36,9 @@ public:
 
     boost::optional<Point> findBlankAround(const Point& p) const;
 
+    // safe spot means that spot won't timetravel
+    boost::optional<Point> findSafeSpotNear(const Point& from) const;
+
     protocol::Response calculateResponse();
 
     static constexpr unsigned kMaxRounds = 300;

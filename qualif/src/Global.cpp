@@ -26,6 +26,10 @@ bool Field::isBlocker() const {
     return is<Wall>() || is<Chest>() || is<DeLorean>();
 }
 
+bool Field::isSteppable() const {
+    return is(ElementType::BLANK) || is(ElementType::CAPABILITY);
+}
+
 void Field::setTimeUntilTimeTravel(int new_value) {
     if (!timeUntilTimeTravel || *timeUntilTimeTravel > new_value) {
         timeUntilTimeTravel = new_value;

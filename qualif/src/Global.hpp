@@ -57,6 +57,7 @@ struct Field {
     }
 
     bool isBlocker() const;
+    bool isSteppable() const;
 
     void setTimeUntilTimeTravel(int new_value);
 

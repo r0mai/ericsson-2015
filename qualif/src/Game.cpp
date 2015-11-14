@@ -158,7 +158,26 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 
 boost::optional<protocol::Response> Game::goToASafeSpot() {
     std::cerr << "goToASafeSpot()" << std::endl;
-    return boost::none;
+
+    auto safeSpot = findSafeSpotNear(*docLocation);
+    if (!safeSpot) {
+        std::cerr << "Safespot not found" << std::endl;
+        return boost::none;
+    }
+
+    std::cerr << "Safespot " << *safeSpot << std::endl;
+
+    auto path = getPathTo(*docLocation, *safeSpot);
+    if (path.empty()) {
+        std::cerr << "Path not found in goToASafeSpot" << std::endl;
+        return boost::none;
+    }
+
+    auto direction = getDirection(*docLocation, path.front());
+    std::cerr << "Info: Moving to " << direction << std::endl;
+    ResponseHelper helper;
+    helper.move(direction);
+    return helper.getResponse();
 }
 
 protocol::Response Game::calculateResponse() {
@@ -172,6 +191,8 @@ protocol::Response Game::calculateResponse() {
     }
 
     if (state.at(*docLocation).timeUntilTimeTravel) {
+        std::cerr << "Doc will time travel in "
+            << *state.at(*docLocation).timeUntilTimeTravel << std::endl;
         auto safeSpotResponse = goToASafeSpot();
         if (safeSpotResponse) {
             return *safeSpotResponse;
@@ -221,8 +242,8 @@ protocol::Response::Direction Game::getDirection(
     if (from.x == to.x && from.y - 1 == to.y) {
         return protocol::Response::UP;
     }
-    std::cerr << "Error: getDirection called with non adjacent vertices: " <<
-        from << " and " << to << std::endl;
+    std::cerr << "Error: getDirection called with non adjacent vertices: "
+        << from << " and " << to << std::endl;
     return protocol::Response::DOWN;
 }
 
@@ -230,12 +251,34 @@ boost::optional<Point> Game::findBlankAround(const Point& p) const {
     auto adjacents = p.getAdjacents();
 
     for (auto k : adjacents) {
-        if (state.at(k).is(ElementType::BLANK) ||
-            state.at(k).is(ElementType::CAPABILITY))
-        {
+        if (state.at(k).isSteppable()) {
             return k;
         }
     }
+    return boost::none;
+}
+
+boost::optional<Point> Game::findSafeSpotNear(const Point& from) const {
+    std::queue<Point> todo;
+
+    todo.push(from);
+
+    while (!todo.empty()) {
+        Point current = todo.front();
+        todo.pop();
+
+        if (!state.at(current).isSteppable()) {
+           continue;
+        }
+        if (!state.at(current).timeUntilTimeTravel) {
+            return current;
+        }
+        auto adjacents = current.getAdjacents();
+        for (const Point& p : adjacents) {
+            todo.push(p);
+        }
+    }
+
     return boost::none;
 }
 
