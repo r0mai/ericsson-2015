@@ -222,12 +222,10 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_2) {
 
     JUST_ASSERT(response->has_command());
     JUST_ASSERT(response->has_direction());
-    JUST_ASSERT(response->has_flux_capatitor_id());
-    JUST_ASSERT(response->has_flux_capatitor_time());
-    JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
+    JUST_ASSERT(!response->has_flux_capatitor_id());
+    JUST_ASSERT(!response->has_flux_capatitor_time());
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::LEFT);
-    JUST_ASSERT_EQUAL(response->flux_capatitor_id(), 1123);
-    JUST_ASSERT_EQUAL(response->flux_capatitor_time(), 2);
 }
 
 JUST_TEST_CASE(Game_gotoDeloreanWithChests_3) {
