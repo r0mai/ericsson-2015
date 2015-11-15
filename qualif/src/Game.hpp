@@ -37,7 +37,7 @@ public:
     protocol::Response::Direction getDirection(
         const Point& from, const Point& to);
 
-    boost::optional<Point> findBlankAround(const Point& p) const;
+    boost::optional<Point> findSafeBlankAround(const Point& p) const;
 
     const FluxCapatitor& minRadiusFluxCapacitor(
         const std::vector<FluxCapatitor>& fcs);

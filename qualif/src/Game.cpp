@@ -157,7 +157,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     if (state.at(next).is(ElementType::CHEST)) {
         // We have to move back
         // FIXME this might (?) get it into infinite loop
-        auto blankSpot = findBlankAround(*docLocation);
+        std::cerr << "Finding a blank spot" << std::endl;
+        auto blankSpot = findSafeBlankAround(*docLocation);
         if (!blankSpot) {
             std::cerr << "Error: No blank spot around Doc" << std::endl;
             return boost::none;
@@ -268,11 +269,11 @@ protocol::Response::Direction Game::getDirection(
     return protocol::Response::DOWN;
 }
 
-boost::optional<Point> Game::findBlankAround(const Point& p) const {
+boost::optional<Point> Game::findSafeBlankAround(const Point& p) const {
     auto adjacents = p.getAdjacents();
 
     for (auto k : adjacents) {
-        if (state.at(k).isSteppable()) {
+        if (state.at(k).isSteppable() && !state.at(k).timeUntilTimeTravel) {
             return k;
         }
     }
