@@ -158,8 +158,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     auto next = path[0];
     if (path.size() > 1) {
         auto nextnext = path[1];
-        if (state.at(next).is(ElementType::BLANK) &&
-            state.at(nextnext).is(ElementType::CHEST))
+        if (state.at(next).isSteppable() &&
+            !state.at(nextnext).isSteppable())
         {
             LOGI("Chest in way will survive "
                 << state.at(nextnext).as<Chest>().survive_timetravels
