@@ -387,3 +387,39 @@ JUST_TEST_CASE(Game_goToASafeSpot_1) {
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::DOWN);
 }
+
+JUST_TEST_CASE(Game_getPathToWithFlux) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWWW",
+        "W   W   W   W  W",
+        "W W   W   W    W",
+        "WDWWWWWWWWWWWW W",
+        "W      L       W",
+        "WFWWWWWWWWWWWWWW",
+        "WWWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    JUST_ASSERT(game.state.at(1, 5).is<FluxCapatitor>());
+
+    auto& fc = game.state.at(1, 5).as<FluxCapatitor>();
+    fc.radius = 1;
+    fc.time_to_activated = 2;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(1, 4).timeUntilTimeTravel, 2);
+
+    auto normalPath = game.getPathTo(*game.docLocation, *game.deLoreanLocation);
+    JUST_ASSERT(!normalPath.empty());
+    JUST_ASSERT_EQUAL(normalPath.front(), Point(1, 4)); // towards flux
+
+    auto avoidPath = game.getPathTo(
+        *game.docLocation, *game.deLoreanLocation,
+        Game::PATH_AVOID_FLUX_AS_FIRST_STEP);
+
+    JUST_ASSERT(!avoidPath.empty());
+    JUST_ASSERT_EQUAL(avoidPath.front(), Point(1, 2)); // away from flux
+}
