@@ -120,9 +120,31 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         PATH_THROUGH_CHEST |
         PATH_AVOID_FLUX_AS_FIRST_STEP);
 
+    auto unsafePath = getPathTo(*docLocation, *deLoreanLocation,
+        PATH_THROUGH_CHEST);
+
     if (path.empty()) {
         std::cerr << "Error: no path to delorean (with chests)" << std::endl;
         return boost::none;
+    }
+
+    if (unsafePath.empty()) {
+        std::cerr << "Error: no unsafe path to delorean (with chests)"
+            << std::endl;
+        return boost::none;
+    }
+
+    if (state.at(unsafePath.front()).isSteppable() &&
+        state.at(unsafePath.front()).timeUntilTimeTravel)
+    {
+        std::cerr << "Next step is unsafe, waiting for explosion" << std::endl;
+        std::cerr << "Current field will time travel in " <<
+            state.at(*docLocation).timeUntilTimeTravel << std::endl;
+
+        // Explicitly return nothing
+        ResponseHelper helper;
+        helper.nothing();
+        return helper.getResponse();
     }
 
     auto next = path[0];

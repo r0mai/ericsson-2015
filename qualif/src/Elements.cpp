@@ -1,7 +1,5 @@
 #include "Elements.hpp"
 
-#include <boost/optional/optional_io.hpp>
-
 namespace bm {
 
 std::ostream& operator<<(std::ostream& os, const FluxCapatitor& fc) {
