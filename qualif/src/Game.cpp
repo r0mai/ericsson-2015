@@ -118,10 +118,11 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 
     auto path = getPathTo(*docLocation, *deLoreanLocation,
         PATH_THROUGH_CHEST |
+        PATH_THROUGH_FLUX |
         PATH_AVOID_FLUX_AS_FIRST_STEP);
 
     auto unsafePath = getPathTo(*docLocation, *deLoreanLocation,
-        PATH_THROUGH_CHEST);
+        PATH_THROUGH_CHEST | PATH_THROUGH_FLUX);
 
     if (path.empty()) {
         std::cerr << "Error: no path to delorean (with chests)" << std::endl;
@@ -397,6 +398,11 @@ std::vector<Point> Game::getPathTo(
                 }
                 if ((flags & PATH_THROUGH_CHEST) &&
                     state.at(p).is(ElementType::CHEST))
+                {
+                    goto use_it;
+                }
+                if ((flags & PATH_THROUGH_FLUX) &&
+                    state.at(p).is(ElementType::FLUXCAPATITOR))
                 {
                     goto use_it;
                 }

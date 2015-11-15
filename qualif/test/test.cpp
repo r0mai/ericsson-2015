@@ -423,3 +423,29 @@ JUST_TEST_CASE(Game_getPathToWithFlux) {
     JUST_ASSERT(!avoidPath.empty());
     JUST_ASSERT_EQUAL(avoidPath.front(), Point(1, 2)); // away from flux
 }
+
+JUST_TEST_CASE(Game_getPathToWithFluxWait) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWW",
+        "W FC C  C   CLW",
+        "WDW WCWCW W WCW",
+        "WC  CCWC     CW",
+        "WWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    JUST_ASSERT(game.state.at(2, 1).is<FluxCapatitor>());
+
+    auto& fc = game.state.at(2, 1).as<FluxCapatitor>();
+    fc.radius = 1;
+    fc.time_to_activated = 2;
+
+    game.initExtraState();
+
+    // response is explicit nothing
+    auto response = game.goToDeloreanThroughChests();
+    JUST_ASSERT(bool(response));
+    JUST_ASSERT(!response->has_command());
+}
