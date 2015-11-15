@@ -1,6 +1,6 @@
 #ifndef GAME_HPP
 
-#include "responseHelper.hpp"
+#include "BMResponseHelper.hpp"
 
 #include "State.hpp"
 #include "Point.hpp"
@@ -58,8 +58,6 @@ public:
     Doc doc;
     DeLorean deLorean;
 };
-
-std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d);
 
 } // namespace bm
 

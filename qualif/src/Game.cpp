@@ -104,9 +104,7 @@ boost::optional<protocol::Response> Game::goToDelorean() {
 
     auto direction = getDirection(*docLocation, path.front());
     std::cerr << "Info: Moving to " << direction << std::endl;
-    ResponseHelper helper;
-    helper.move(direction);
-    return helper.getResponse();
+    return response::move(direction);
 }
 
 boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
@@ -143,9 +141,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
             state.at(*docLocation).timeUntilTimeTravel << std::endl;
 
         // Explicitly return nothing
-        ResponseHelper helper;
-        helper.nothing();
-        return helper.getResponse();
+        return response::nothing();
     }
 
     auto next = path[0];
@@ -171,9 +167,7 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 
             auto& best_fc = minRadiusFluxCapacitor(doc.flux_capatitors);
 
-            ResponseHelper helper;
-            helper.put(useDirection, best_fc.id, kMaxTimeTravel);
-            return helper.getResponse();
+            return response::put(useDirection, best_fc.id, kMaxTimeTravel);
         }
 
     }
@@ -187,14 +181,10 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
             return boost::none;
         }
         auto moveDirection = getDirection(*docLocation, *blankSpot);
-        ResponseHelper helper;
-        helper.move(moveDirection);
-        return helper.getResponse();
+        return response::move(moveDirection);
     } else {
         auto direction = getDirection(*docLocation, next);
-        ResponseHelper helper;
-        helper.move(direction);
-        return helper.getResponse();
+        return response::move(direction);
     }
 }
 
@@ -217,9 +207,7 @@ boost::optional<protocol::Response> Game::goToASafeSpot() {
 
     auto direction = getDirection(*docLocation, path.front());
     std::cerr << "Info: Moving to " << direction << std::endl;
-    ResponseHelper helper;
-    helper.move(direction);
-    return helper.getResponse();
+    return response::move(direction);
 }
 
 protocol::Response Game::calculateResponse() {
@@ -227,9 +215,7 @@ protocol::Response Game::calculateResponse() {
 
     if (!docLocation) {
         std::cerr << "Doc not found, so returning nothing()" << std::endl;
-        ResponseHelper helper;
-        helper.nothing();
-        return helper.getResponse();
+        return response::nothing();
     }
 
     std::cerr << "doc.survive_timetravels = "
@@ -256,9 +242,7 @@ protocol::Response Game::calculateResponse() {
         return *gotoResponse;
     }
 
-    ResponseHelper helper;
-    helper.nothing();
-    return helper.getResponse();
+    return response::nothing();
 }
 
 boost::optional<Point> Game::findObject(ElementType type) {
@@ -415,17 +399,6 @@ use_it:
         }
     }
     return {};
-}
-
-std::ostream& operator<<(std::ostream& os, protocol::Response::Direction d) {
-    switch (d) {
-        case protocol::Response::UP: os << "UP"; break;
-        case protocol::Response::DOWN: os << "DOWN"; break;
-        case protocol::Response::LEFT: os << "LEFT"; break;
-        case protocol::Response::RIGHT: os << "RIGHT"; break;
-        default: os << "UNKNOWN DIRECTION"; break;
-    }
-    return os;
 }
 
 } // namespace bm
