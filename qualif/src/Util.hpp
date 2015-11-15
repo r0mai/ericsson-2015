@@ -18,8 +18,8 @@
         }                                                           \
     } while (false)
 
-#define LOGE(x) std::cerr << "E: " << __FILE__ ":" << __LINE__ << ": " << x << std::endl;
-#define LOGI(x) std::cerr << "I: " << __FILE__ ":" << __LINE__ << ": " << x << std::endl;
+#define LOGE(x) std::cerr << "E: " << x << std::endl;
+#define LOGI(x) std::cerr << "I: " << x << std::endl;
 
 namespace bm {
 
