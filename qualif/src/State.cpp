@@ -48,12 +48,20 @@ std::ostream& operator<<(std::ostream& os, const Field& f) {
 }
 
 std::string toString(const Fields& fields) {
+    std::vector<Point> fluxes;
     std::stringstream ss;
     for (size_t y = 0; y < fields[0].size(); ++y) {
         for (size_t x = 0; x < fields.size(); ++x) {
             ss << fields[x][y];
+            if (fields[x][y].is<FluxCapatitor>()) {
+                fluxes.push_back(Point(x, y));
+            }
         }
         ss << '\n';
+    }
+    for (const Point& p : fluxes) {
+        ss << "Flux at " << p << ": "
+            << fields[p.x][p.y].as<FluxCapatitor>() << '\n';
     }
     return ss.str();
 }
