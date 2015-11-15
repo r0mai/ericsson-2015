@@ -22,7 +22,13 @@ void Game::run() {
         std::cerr << "Info: Tick = " << state.tick << std::endl;
         std::cerr << toString(state.fields) << std::endl;
 
-        protocol::Response response = calculateResponse();
+        protocol::Response response;
+        try {
+            response = calculateResponse();
+        } catch (const std::exception& ex) {
+            std::cerr << "Exception caught: " << ex.what() << std::endl;
+            response = response::nothing();
+        }
         if (!writeProtoOnStream(response, std::cout)) {
             std::cerr << "write error" << std::endl;
             break;
