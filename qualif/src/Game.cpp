@@ -10,8 +10,13 @@
 namespace bm {
 
 void Game::run() {
-    protocol::Global global;
-    while (readProtoFromStream(global, std::cin)) {
+    while (true) {
+        protocol::Global global;
+        if (!readProtoFromStream(global, std::cin)) {
+            LOGI("EOF");
+            break;
+        }
+
         auto start = std::chrono::system_clock::now();
         if (global.has_error()) {
             LOGE("error from last tick: " << fromProto(global.error()));
