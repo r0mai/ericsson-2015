@@ -208,8 +208,11 @@ protocol::Response Game::calculateResponse() {
         return helper.getResponse();
     }
 
+    std::cerr << "doc.survive_timetravels = "
+        << doc.survive_timetravels << std::endl;
+
     if (state.at(*docLocation).timeUntilTimeTravel) {
-        std::cerr << "Doc will time travel in "
+        std::cerr << "Location of doc will time travel in "
             << *state.at(*docLocation).timeUntilTimeTravel << std::endl;
         auto safeSpotResponse = goToASafeSpot();
         if (safeSpotResponse) {
