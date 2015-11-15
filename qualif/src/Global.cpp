@@ -79,7 +79,7 @@ FieldElement fromProto(const protocol::Field::ElementInfo& ei) {
 	    BM_ASSERT(ei.has_capability());
 	    return fromProto(ei.capability());
         case ElementType::BLANK:
-            // should never happen
+            LOGE("This should never happen (fromProto(FieldElement) blank)");
             return {};
     }
     BM_ASSERT(false);
