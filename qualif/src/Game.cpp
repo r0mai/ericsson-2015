@@ -74,7 +74,7 @@ void Game::initTimeUntilTimeTravelAt(const Point& p) {
         state.at(x, p.y).setTimeUntilTimeTravel(time);
     }
     for (int y = p.y;
-        y < state.height && y < p.y + radius && !state.at(p.x, y).isBlocker(); ++y) {
+        y < state.height && y <= p.y + radius && !state.at(p.x, y).isBlocker(); ++y) {
         state.at(p.x, y).setTimeUntilTimeTravel(time);
     }
     for (int y = p.y;
@@ -149,6 +149,8 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         // Explicitly return nothing
         return response::nothing();
     }
+
+    std::cerr << "Path is safe for now" << std::endl;
 
     auto next = path[0];
     if (path.size() > 1) {

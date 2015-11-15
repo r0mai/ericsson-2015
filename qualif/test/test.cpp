@@ -424,7 +424,7 @@ JUST_TEST_CASE(Game_getPathToWithFlux) {
     JUST_ASSERT_EQUAL(avoidPath.front(), Point(1, 2)); // away from flux
 }
 
-JUST_TEST_CASE(Game_getPathToWithFluxWait) {
+JUST_TEST_CASE(Game_getPathToWithFluxWait_1) {
     State state = stateFromString({
         "WWWWWWWWWWWWWWW",
         "W FC C  C   CLW",
@@ -443,6 +443,34 @@ JUST_TEST_CASE(Game_getPathToWithFluxWait) {
     fc.time_to_activated = 2;
 
     game.initExtraState();
+
+    // response is explicit nothing
+    auto response = game.goToDeloreanThroughChests();
+    JUST_ASSERT(bool(response));
+    JUST_ASSERT(!response->has_command());
+}
+
+JUST_TEST_CASE(Game_getPathToWithFluxWait_2) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWW",
+        "WFCL          W",
+        "W WWWWWWWWWWW W",
+        "WD            W",
+        "WWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    JUST_ASSERT(game.state.at(1, 1).is<FluxCapatitor>());
+
+    auto& fc = game.state.at(1, 1).as<FluxCapatitor>();
+    fc.radius = 1;
+    fc.time_to_activated = 2;
+
+    game.initExtraState();
+
+    JUST_ASSERT_EQUAL(game.state.at(1, 2).timeUntilTimeTravel, 2);
 
     // response is explicit nothing
     auto response = game.goToDeloreanThroughChests();
