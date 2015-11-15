@@ -14,31 +14,30 @@ void Game::run() {
     while (readProtoFromStream(global, std::cin)) {
         auto start = std::chrono::system_clock::now();
         if (global.has_error()) {
-            std::cerr << "Error from last tick: " <<
-                fromProto(global.error()) << std::endl;
+            LOGE("error from last tick: " << fromProto(global.error()));
         }
         state = fromProto(global);
 
-        std::cerr << "Info: Tick = " << state.tick << std::endl;
+        LOGI("Tick = " << state.tick);
         std::cerr << toString(state.fields) << std::endl;
 
         protocol::Response response;
         try {
             response = calculateResponse();
         } catch (const std::exception& ex) {
-            std::cerr << "Exception caught: " << ex.what() << std::endl;
+            LOGE("Exception caught: " << ex.what());
             response = response::nothing();
         }
         if (!writeProtoOnStream(response, std::cout)) {
-            std::cerr << "write error" << std::endl;
+            LOGE("write error");
             break;
         }
         auto end = std::chrono::system_clock::now();
         std::chrono::duration<double> diff = end - start;
 
-        std::cerr << "Tick took " << diff.count() * 1000 << "ms" << std::endl;
+        LOGI("Tick took " << diff.count() * 1000 << "ms");
     }
-    std::cerr << "Game over, std::cin.eof(): " << std::cin.eof() << std::endl;
+    LOGI("Game over, std::cin.eof(): " << std::cin.eof());
 }
 
 void Game::initExtraState() {
@@ -94,9 +93,9 @@ void Game::initTimeUntilTimeTravel() {
 }
 
 boost::optional<protocol::Response> Game::goToDelorean() {
-    std::cerr << "goToDelorean()" << std::endl;
+    LOGI("goToDelorean()");
     if (!docLocation || !deLoreanLocation) {
-        std::cerr << "Error: doc and/or delorean missing" << std::endl;
+        LOGE("doc and/or delorean missing");
         return boost::none;
     }
 
@@ -104,19 +103,18 @@ boost::optional<protocol::Response> Game::goToDelorean() {
         *docLocation, *deLoreanLocation, PATH_AVOID_FLUX_AS_FIRST_STEP);
 
     if (path.empty()) {
-        std::cerr << "Error: can't find path to deLorean from doc" << std::endl;
+        LOGE("can't find path to deLorean from doc");
         return boost::none;
     }
 
     auto direction = getDirection(*docLocation, path.front());
-    std::cerr << "Info: Moving to " << direction << std::endl;
     return response::move(direction);
 }
 
 boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
-    std::cerr << "goToDeloreanThroughChests()" << std::endl;
+    LOGI("goToDeloreanThroughChests()");
     if (!docLocation || !deLoreanLocation) {
-        std::cerr << "Error: doc and/or delorean missing" << std::endl;
+        LOGE("doc and/or delorean missing");
         return boost::none;
     }
 
@@ -129,28 +127,27 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         PATH_THROUGH_CHEST | PATH_THROUGH_FLUX);
 
     if (path.empty()) {
-        std::cerr << "Error: no path to delorean (with chests)" << std::endl;
+        LOGE("no path to delorean (with chests)");
         return boost::none;
     }
 
     if (unsafePath.empty()) {
-        std::cerr << "Error: no unsafe path to delorean (with chests)"
-            << std::endl;
+        LOGE("no unsafe path to delorean (with chests)");
         return boost::none;
     }
 
     if (state.at(unsafePath.front()).isSteppable() &&
         state.at(unsafePath.front()).timeUntilTimeTravel)
     {
-        std::cerr << "Next step is unsafe, waiting for explosion" << std::endl;
-        std::cerr << "Current field will time travel in " <<
-            state.at(*docLocation).timeUntilTimeTravel << std::endl;
+        LOGI("Next step is unsafe, waiting for explosion");
+        LOGI("Current field will time travel in " <<
+            state.at(*docLocation).timeUntilTimeTravel);
 
         // Explicitly return nothing
         return response::nothing();
     }
 
-    std::cerr << "Path is safe for now" << std::endl;
+    LOGI("Path is safe for now");
 
     auto next = path[0];
     if (path.size() > 1) {
@@ -158,18 +155,18 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         if (state.at(next).is(ElementType::BLANK) &&
             state.at(nextnext).is(ElementType::CHEST))
         {
-            std::cerr << "Chest in way will survive "
+            LOGI("Chest in way will survive "
                 << state.at(nextnext).as<Chest>().survive_timetravels
-                << " more time travels" << std::endl;
+                << " more time travels");
 
             auto useDirection = getDirection(*docLocation, next);
 
-            std::cerr << "Avaliable fluxes:" << std::endl;
+            LOGI("Avaliable fluxes:");
             for (auto& fc : doc.flux_capatitors) {
-                std::cerr << fc << std::endl;
+                LOGI(fc);
             }
             if (doc.flux_capatitors.empty()) {
-                std::cerr << "No fluxes" << std::endl;
+                LOGI("No fluxes");
                 return boost::none;
             }
 
@@ -182,10 +179,10 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
     if (state.at(next).is(ElementType::CHEST)) {
         // We have to move back
         // FIXME this might (?) get it into infinite loop
-        std::cerr << "Finding a blank spot" << std::endl;
+        LOGI("Finding a blank spot");
         auto blankSpot = findSafeBlankAround(*docLocation);
         if (!blankSpot) {
-            std::cerr << "Error: No blank spot around Doc" << std::endl;
+            LOGE("No blank spot around Doc");
             return boost::none;
         }
         auto moveDirection = getDirection(*docLocation, *blankSpot);
@@ -197,24 +194,24 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
 }
 
 boost::optional<protocol::Response> Game::goToASafeSpot() {
-    std::cerr << "goToASafeSpot()" << std::endl;
+    LOGI("goToASafeSpot()");
 
     auto safeSpot = findSafeSpotNear(*docLocation);
     if (!safeSpot) {
-        std::cerr << "Safespot not found" << std::endl;
+        LOGE("Safespot not found");
         return boost::none;
     }
 
-    std::cerr << "Safespot " << *safeSpot << std::endl;
+    LOGI("Safespot " << *safeSpot);
 
     auto path = getPathTo(*docLocation, *safeSpot);
     if (path.empty()) {
-        std::cerr << "Path not found in goToASafeSpot" << std::endl;
+        LOGE("Path not found in goToASafeSpot");
         return boost::none;
     }
 
     auto direction = getDirection(*docLocation, path.front());
-    std::cerr << "Info: Moving to " << direction << std::endl;
+    LOGE("Info: Moving to " << direction);
     return response::move(direction);
 }
 
@@ -222,16 +219,15 @@ protocol::Response Game::calculateResponse() {
     initExtraState();
 
     if (!docLocation) {
-        std::cerr << "Doc not found, so returning nothing()" << std::endl;
+        LOGI("Doc not found, so returning nothing()");
         return response::nothing();
     }
 
-    std::cerr << "doc.survive_timetravels = "
-        << doc.survive_timetravels << std::endl;
+    LOGI("doc.survive_timetravels = " << doc.survive_timetravels);
 
     if (state.at(*docLocation).timeUntilTimeTravel) {
-        std::cerr << "Location of doc will time travel in "
-            << *state.at(*docLocation).timeUntilTimeTravel << std::endl;
+        LOGI("Location of doc will time travel in "
+            << *state.at(*docLocation).timeUntilTimeTravel);
         auto safeSpotResponse = goToASafeSpot();
         if (safeSpotResponse) {
             return *safeSpotResponse;
@@ -279,8 +275,8 @@ protocol::Response::Direction Game::getDirection(
     if (from.x == to.x && from.y - 1 == to.y) {
         return protocol::Response::UP;
     }
-    std::cerr << "Error: getDirection called with non adjacent vertices: "
-        << from << " and " << to << std::endl;
+    LOGE("Error: getDirection called with non adjacent vertices: "
+        << from << " and " << to);
     return protocol::Response::DOWN;
 }
 
@@ -356,7 +352,7 @@ std::vector<Point> Game::getPathTo(
             std::vector<Point> path;
             for (Point at = current; at != from; at = parentMatrix[at.x][at.y]) {
                 if (at == Point(-1, -1)) {
-                    std::cerr << "Error: from not found in getPathTo()" << std::endl;
+                    LOGE("Error: from not found in getPathTo()");
                     return {};
                 }
                 path.push_back(at);

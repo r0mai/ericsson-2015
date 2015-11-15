@@ -1,19 +1,20 @@
 #include "BMResponseHelper.hpp"
 
+#include "Util.hpp"
 #include <iostream>
 
 namespace bm {
 namespace response {
 
 protocol::Response nothing() {
-    std::cerr << "Response = nothing" << std::endl;
+    LOGI("Response = nothing");
     ResponseHelper helper;
     helper.nothing();
     return helper.getResponse();
 }
 
 protocol::Response move(protocol::Response::Direction direction) {
-    std::cerr << "Response = move(" << direction << ")" << std::endl;
+    LOGI("Response = move(" << direction << ")");
     ResponseHelper helper;
     helper.move(direction);
     return helper.getResponse();
@@ -24,10 +25,10 @@ protocol::Response put(
     unsigned int flux_capatitor_id,
     unsigned int flux_capatitor_time)
 {
-    std::cerr << "Response = put("
+    LOGI("Response = put("
         << direction
         << ", id = " << flux_capatitor_id
-        << ", time = " << flux_capatitor_time << ")" << std::endl;
+        << ", time = " << flux_capatitor_time << ")");
 
     ResponseHelper helper;
     helper.put(direction, flux_capatitor_id, flux_capatitor_time);

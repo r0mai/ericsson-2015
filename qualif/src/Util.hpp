@@ -1,8 +1,8 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include <iostream>
 #include <vector>
+#include <iostream>
 #include <stdexcept>
 
 #include <boost/preprocessor/stringize.hpp>
@@ -17,6 +17,9 @@
             throw std::runtime_error(message);                      \
         }                                                           \
     } while (false)
+
+#define LOGE(x) std::cerr << "Error: " << x << std::endl;
+#define LOGI(x) std::cerr << "Info : " << x << std::endl;
 
 namespace bm {
 
