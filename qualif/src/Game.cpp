@@ -352,7 +352,21 @@ boost::optional<Point> Game::findSafeSpotNear(const Point& from) const {
     return boost::none;
 }
 
-// simple BFS
+int Game::getDistanceOn(const Point& p) const {
+    if (state.at(p).isSteppable()) {
+        return 1;
+    }
+    if (state.at(p).is<FluxCapatitor>()) {
+        return 1;
+    }
+    if (state.at(p).is<Chest>()) {
+        return 5;
+    }
+    // Wall and other stuff. doesn't matter
+    return 100000;
+}
+
+// simple Dijkstraish
 std::vector<Point> Game::getPathTo(
     const Point& from, const Point& to, unsigned flags) const
 {
@@ -361,14 +375,14 @@ std::vector<Point> Game::getPathTo(
     auto distanceMatrix = createMatrixWithShape<int>(
         state.fields, -1);
 
-    std::queue<Point> todo;
+    std::set<std::pair<int, Point>> todo;
 
-    todo.push(from);
     distanceMatrix[from.x][from.y] = 0;
+    todo.insert({distanceMatrix[from.x][from.y], from});
 
     while (!todo.empty()) {
-        Point current = todo.front();
-        todo.pop();
+        Point current = todo.begin()->second;
+        todo.erase(todo.begin());
 
         if (current == to) {
             // Build the result
@@ -385,9 +399,13 @@ std::vector<Point> Game::getPathTo(
         }
 
         auto adjacents = current.getAdjacents();
+        auto current_distance = distanceMatrix[current.x][current.y];
         for (const Point& p : adjacents) {
+            auto edge_distance = getDistanceOn(p);
+            auto p_distance = distanceMatrix[p.x][p.y];
             if (p != to) {
-                if (distanceMatrix[p.x][p.y] != -1) {
+                if (p_distance != -1 &&
+                    p_distance <= current_distance + edge_distance) {
                     continue;
                 }
                 if (p.x < 0 || p.x >= int(state.width) ||
@@ -420,8 +438,9 @@ std::vector<Point> Game::getPathTo(
                 continue;
             }
 use_it:
-            todo.push(p);
-            distanceMatrix[p.x][p.y] = distanceMatrix[current.x][current.y] + 1;
+            todo.erase({p_distance, p});
+            distanceMatrix[p.x][p.y] = current_distance + edge_distance;
+            todo.insert({distanceMatrix[p.x][p.y], p});
             parentMatrix[p.x][p.y] = current;
         }
     }

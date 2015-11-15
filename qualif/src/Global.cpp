@@ -27,7 +27,9 @@ bool Field::isBlocker() const {
 }
 
 bool Field::isSteppable() const {
-    return is(ElementType::BLANK) || is(ElementType::CAPABILITY);
+    return is(ElementType::BLANK) ||
+        is(ElementType::CAPABILITY) ||
+        is(ElementType::DELOREAN);
 }
 
 void Field::setTimeUntilTimeTravel(int new_value) {

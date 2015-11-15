@@ -30,6 +30,8 @@ public:
     const static unsigned PATH_THROUGH_CHEST = 1;
     const static unsigned PATH_THROUGH_FLUX = 2;
     const static unsigned PATH_AVOID_FLUX_AS_FIRST_STEP = 4;
+
+    int getDistanceOn(const Point& p) const;
     std::vector<Point> getPathTo(
         const Point& from, const Point& to, unsigned flags = 0) const;
 
