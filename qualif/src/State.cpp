@@ -38,7 +38,7 @@ struct ToCharVisitor : boost::static_visitor<char> {
     char operator()(const Wall&) const { return 'W'; }
     char operator()(const Chest&) const { return 'C'; }
     char operator()(const DeLorean&) const { return 'L'; }
-    char operator()(const Capability&) const { return 'F'; }
+    char operator()(const Capability&) const { return 'P'; }
     char operator()(const boost::blank&) const { return ' '; }
 };
 
