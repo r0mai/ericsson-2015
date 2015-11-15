@@ -53,7 +53,7 @@ void Game::initSpecialPositions() {
 }
 
 void Game::initTimeUntilTimeTravelAt(const Point& p) {
-    assert(state.at(p).is<FluxCapatitor>());
+    BM_ASSERT(state.at(p).is<FluxCapatitor>());
 
     auto& fc = state.at(p).as<FluxCapatitor>();
     auto time = fc.time_to_activated;
@@ -290,7 +290,7 @@ boost::optional<Point> Game::findSafeBlankAround(const Point& p) const {
 const FluxCapatitor& Game::minRadiusFluxCapacitor(
     const std::vector<FluxCapatitor>& fcs)
 {
-    assert(!fcs.empty());
+    BM_ASSERT(!fcs.empty());
 
     const FluxCapatitor* best = &fcs.front();
 

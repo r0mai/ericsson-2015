@@ -53,36 +53,36 @@ ElementType fromProto(protocol::Field::ElementType et) {
         case protocol::Field::CAPABILITY:
 	    return ElementType::CAPABILITY;
     }
-    assert(false);
+    BM_ASSERT(false);
 }
 
 FieldElement fromProto(const protocol::Field::ElementInfo& ei) {
     switch (fromProto(ei.type())) {
 	case ElementType::FLUXCAPATITOR:
-	    assert(ei.has_flux_capatitor());
+	    BM_ASSERT(ei.has_flux_capatitor());
 	    return fromProto(ei.flux_capatitor());
 	case ElementType::DOC:
-	    assert(ei.has_doc());
+	    BM_ASSERT(ei.has_doc());
 	    return fromProto(ei.doc());
 	case ElementType::ENEMY:
-	    assert(ei.has_enemy());
+	    BM_ASSERT(ei.has_enemy());
 	    return fromProto(ei.enemy());
 	case ElementType::WALL:
 	    return Wall{};
 	case ElementType::CHEST:
-	    assert(ei.has_chest());
+	    BM_ASSERT(ei.has_chest());
 	    return fromProto(ei.chest());
 	case ElementType::DELOREAN:
-	    assert(ei.has_delorean());
+	    BM_ASSERT(ei.has_delorean());
 	    return fromProto(ei.delorean());
 	case ElementType::CAPABILITY:
-	    assert(ei.has_capability());
+	    BM_ASSERT(ei.has_capability());
 	    return fromProto(ei.capability());
         case ElementType::BLANK:
             // should never happen
             return {};
     }
-    assert(false);
+    BM_ASSERT(false);
 }
 
 Field fromProto(const protocol::Field& f) {

@@ -8,6 +8,7 @@
 #include <boost/optional.hpp>
 #include <boost/optional/optional_io.hpp>
 
+#include "Util.hpp"
 #include "Elements.pb.h"
 
 namespace bm {

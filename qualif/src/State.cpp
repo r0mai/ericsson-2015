@@ -1,6 +1,6 @@
 #include "State.hpp"
+#include "Util.hpp"
 
-#include <cassert>
 #include <sstream>
 
 namespace bm {
@@ -14,19 +14,19 @@ const Field& State::at(const Point& p) const {
 }
 
 Field& State::at(int x, int y) {
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < width);
-    assert(y < height);
+    BM_ASSERT(x >= 0);
+    BM_ASSERT(y >= 0);
+    BM_ASSERT(x < width);
+    BM_ASSERT(y < height);
 
     return fields[x][y];
 }
 
 const Field& State::at(int x, int y) const {
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < width);
-    assert(y < height);
+    BM_ASSERT(x >= 0);
+    BM_ASSERT(y >= 0);
+    BM_ASSERT(x < width);
+    BM_ASSERT(y < height);
 
     return fields[x][y];
 }
@@ -96,7 +96,7 @@ State fromProto(const protocol::Global& g) {
         std::vector<std::vector<Field>>(res.width,
         std::vector<Field>(res.height));
 
-    assert(g.fields_size() == int(res.width * res.height));
+    BM_ASSERT(g.fields_size() == int(res.width * res.height));
     for (uint32_t y = 0; y < res.height; ++y) {
         for (uint32_t x = 0; x < res.width; ++x) {
             res.fields[x][y] = fromProto(g.fields(y * res.height + x));

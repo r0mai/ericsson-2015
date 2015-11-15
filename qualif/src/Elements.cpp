@@ -31,7 +31,7 @@ Capability fromProto(protocol::Capability c) {
 	case protocol::THROWFLUXCAPATITOR:
 	    return Capability::THROWFLUXCAPATITOR;
     }
-    assert(false);
+    BM_ASSERT(false);
 }
 
 FluxCapatitor fromProto(const protocol::FluxCapatitor& fc) {

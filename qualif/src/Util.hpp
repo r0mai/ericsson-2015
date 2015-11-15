@@ -1,7 +1,22 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
+#include <iostream>
 #include <vector>
+#include <stdexcept>
+
+#include <boost/preprocessor/stringize.hpp>
+
+#define BM_ASSERT(p)                                                \
+    do {                                                            \
+        if (!(p)) {                                                 \
+            const char* message =                                   \
+                "ASSERTION FAILED on "                              \
+                __FILE__ ":" BOOST_PP_STRINGIZE(__LINE__) " : " #p; \
+            std::cerr << message << std::endl;                      \
+            throw std::runtime_error(message);                      \
+        }                                                           \
+    } while (false)
 
 namespace bm {
 

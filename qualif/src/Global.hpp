@@ -46,13 +46,13 @@ struct Field {
 
     template<class T>
     T& as() {
-        assert(is<T>());
+        BM_ASSERT(is<T>());
         return boost::get<T>(element);
     }
 
     template<class T>
     const T& as() const {
-        assert(is<T>());
+        BM_ASSERT(is<T>());
         return boost::get<T>(element);
     }
 
