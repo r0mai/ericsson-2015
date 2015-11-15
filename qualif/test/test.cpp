@@ -157,7 +157,8 @@ JUST_TEST_CASE(Game_getPath_simple_corridor_with_Chests) {
     Point docLocation = *game.findObject(ElementType::DOC);
     Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
 
-    auto path = game.getPathTo(docLocation, deLoreanLocation, true);
+    auto path = game.getPathTo(docLocation, deLoreanLocation,
+            Game::PATH_THROUGH_CHEST);
 
     JUST_ASSERT_EQUAL(path.size(), 13);
 
@@ -174,6 +175,66 @@ JUST_TEST_CASE(Game_getPath_simple_corridor_with_Chests) {
     JUST_ASSERT_EQUAL(path[10], Point(12, 1));
     JUST_ASSERT_EQUAL(path[11], Point(13, 1));
     JUST_ASSERT_EQUAL(path[12], Point(14, 1));
+}
+
+JUST_TEST_CASE(Game_getPath_Dijkstra_test_chest_is_expensive) {
+    State state = stateFromString({
+        "WWWWWWW",
+        "WD C LW",
+        "WW   WW",
+        "WWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    Point docLocation = *game.findObject(ElementType::DOC);
+    Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
+
+    auto path = game.getPathTo(docLocation, deLoreanLocation,
+            Game::PATH_THROUGH_CHEST);
+
+    JUST_ASSERT_EQUAL(path.size(), 6);
+
+    JUST_ASSERT_EQUAL(path[0], Point(2, 1));
+    JUST_ASSERT_EQUAL(path[1], Point(2, 2));
+    JUST_ASSERT_EQUAL(path[2], Point(3, 2));
+    JUST_ASSERT_EQUAL(path[3], Point(4, 2));
+    JUST_ASSERT_EQUAL(path[4], Point(4, 1));
+    JUST_ASSERT_EQUAL(path[5], Point(5, 1));
+}
+
+JUST_TEST_CASE(Game_getPath_Dijkstra_test_chest_can_be_a_good_choice) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWW",
+        "WD CCC     LW",
+        "WW   C WWWWWW",
+        "WWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    Point docLocation = *game.findObject(ElementType::DOC);
+    Point deLoreanLocation = *game.findObject(ElementType::DELOREAN);
+
+    auto path = game.getPathTo(docLocation, deLoreanLocation,
+            Game::PATH_THROUGH_CHEST);
+
+    JUST_ASSERT_EQUAL(path.size(), 12);
+
+    JUST_ASSERT_EQUAL(path[0], Point(2, 1));
+    JUST_ASSERT_EQUAL(path[1], Point(2, 2));
+    JUST_ASSERT_EQUAL(path[2], Point(3, 2));
+    JUST_ASSERT_EQUAL(path[3], Point(4, 2));
+    JUST_ASSERT_EQUAL(path[4], Point(5, 2));
+    JUST_ASSERT_EQUAL(path[5], Point(6, 2));
+    JUST_ASSERT_EQUAL(path[6], Point(6, 1));
+    JUST_ASSERT_EQUAL(path[7], Point(7, 1));
+    JUST_ASSERT_EQUAL(path[8], Point(8, 1));
+    JUST_ASSERT_EQUAL(path[9], Point(9, 1));
+    JUST_ASSERT_EQUAL(path[10], Point(10, 1));
+    JUST_ASSERT_EQUAL(path[11], Point(11, 1));
 }
 
 JUST_TEST_CASE(Game_gotoDeloreanWithChests_1) {
