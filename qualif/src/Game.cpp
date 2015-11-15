@@ -94,7 +94,8 @@ boost::optional<protocol::Response> Game::goToDelorean() {
         return boost::none;
     }
 
-    auto path = getPathTo(*docLocation, *deLoreanLocation);
+    auto path = getPathTo(
+        *docLocation, *deLoreanLocation, PATH_AVOID_FLUX_AS_FIRST_STEP);
 
     if (path.empty()) {
         std::cerr << "Error: can't find path to deLorean from doc" << std::endl;
@@ -115,7 +116,10 @@ boost::optional<protocol::Response> Game::goToDeloreanThroughChests() {
         return boost::none;
     }
 
-    auto path = getPathTo(*docLocation, *deLoreanLocation, true);
+    auto path = getPathTo(*docLocation, *deLoreanLocation,
+        PATH_THROUGH_CHEST |
+        PATH_AVOID_FLUX_AS_FIRST_STEP);
+
     if (path.empty()) {
         std::cerr << "Error: no path to delorean (with chests)" << std::endl;
         return boost::none;
@@ -312,7 +316,7 @@ boost::optional<Point> Game::findSafeSpotNear(const Point& from) const {
 
 // simple BFS
 std::vector<Point> Game::getPathTo(
-    const Point& from, const Point& to, bool throughChest) const
+    const Point& from, const Point& to, unsigned flags) const
 {
     auto parentMatrix = createMatrixWithShape<Point>(
         state.fields, Point(-1, -1));
@@ -353,13 +357,19 @@ std::vector<Point> Game::getPathTo(
                 {
                     continue;
                 }
+                if ((flags & PATH_AVOID_FLUX_AS_FIRST_STEP) &&
+                    current == from &&
+                    state.at(p).timeUntilTimeTravel)
+                {
+                    continue;
+                }
                 if (state.at(p).is(ElementType::BLANK)) {
                     goto use_it;
                 }
                 if (state.at(p).is(ElementType::CAPABILITY)) {
                     goto use_it;
                 }
-                if (throughChest &&
+                if ((flags & PATH_THROUGH_CHEST) &&
                     state.at(p).is(ElementType::CHEST))
                 {
                     goto use_it;

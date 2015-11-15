@@ -27,8 +27,11 @@ public:
     boost::optional<protocol::Response> goToDeloreanThroughChests();
     boost::optional<protocol::Response> goToASafeSpot();
 
+    const unsigned PATH_THROUGH_CHEST = 1;
+    const unsigned PATH_AVOID_FLUX_AS_FIRST_STEP = 2;
     std::vector<Point> getPathTo(
-        const Point& from, const Point& to, bool throughChest = false) const;
+        const Point& from, const Point& to, unsigned flags = 0) const;
+
     boost::optional<Point> findObject(ElementType type);
 
     protocol::Response::Direction getDirection(
