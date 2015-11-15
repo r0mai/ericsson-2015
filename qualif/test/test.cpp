@@ -477,3 +477,69 @@ JUST_TEST_CASE(Game_getPathToWithFluxWait_2) {
     JUST_ASSERT(bool(response));
     JUST_ASSERT(!response->has_command());
 }
+
+JUST_TEST_CASE(Game_realLife_second_map_1) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWW",
+        "W       C   C W",
+        "W W WCWCW W WCW",
+        "WC  CCCC     CW",
+        "W W WCWCW W W W",
+        "W    C  CCC C W",
+        "WCW WCWCW W WCW",
+        "WCCC CC   CD CW",
+        "W W W WCWCWCWCW",
+        "W C C   CCC CCW",
+        "W WCW W W W W W",
+        "W C CC C CC  CW",
+        "W W WCW W WCWCW",
+        "W C  CC   CC LW",
+        "WWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    game.initExtraState();
+
+    auto response = game.goToDeloreanThroughChests();
+
+    JUST_ASSERT(bool(response));
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::UP);
+}
+
+JUST_TEST_CASE(Game_realLife_second_map_2) {
+    State state = stateFromString({
+        "WWWWWWWWWWWWWWW",
+        "W       C   C W",
+        "W W WCWCW W WCW",
+        "WC  CCCC     CW",
+        "W W WCWCW W W W",
+        "W    C  CCC C W",
+        "WCW WCWCW WDWCW",
+        "WCCC CC   C  CW",
+        "W W W WCWCWCWCW",
+        "W C C   CCC CCW",
+        "W WCW W W W W W",
+        "W C CC C CC  CW",
+        "W W WCW W WCWCW",
+        "W C  CC   CC LW",
+        "WWWWWWWWWWWWWWW",
+    });
+
+    Game game;
+    game.state = state;
+
+    FluxCapatitor fc;
+    fc.id = 1123;
+
+    game.initExtraState();
+    game.doc.flux_capatitors.push_back(fc);
+
+    auto response = game.goToDeloreanThroughChests();
+
+    JUST_ASSERT(bool(response));
+    JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
+    JUST_ASSERT_EQUAL(response->direction(), protocol::Response::DOWN);
+}

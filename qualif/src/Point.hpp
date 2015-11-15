@@ -4,6 +4,8 @@
 #include <array>
 #include <ostream>
 
+#include <boost/optional.hpp>
+
 #include "Response.pb.h"
 
 namespace bm {
@@ -15,7 +17,10 @@ struct Point {
     int x = 0;
     int y = 0;
 
-    Point moveTo(protocol::Response::Direction d);
+    Point moveTo(protocol::Response::Direction d) const;
+
+    boost::optional<protocol::Response::Direction> getDirection(
+        const Point& other) const;
 
     std::array<Point, 4> getAdjacents() const;
 };

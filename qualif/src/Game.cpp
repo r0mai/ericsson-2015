@@ -291,9 +291,26 @@ boost::optional<Point> Game::findSafeBlankAround(const Point& p) const {
 
     for (auto k : adjacents) {
         if (state.at(k).isSteppable() && !state.at(k).timeUntilTimeTravel) {
+            auto second_adjacents = k.getAdjacents();
+            for (auto kk : second_adjacents) {
+                if (k == kk) {
+                    continue;
+                }
+                if (state.at(kk).isSteppable()) {
+                    return k;
+                    LOGI("Double safe spot = " << kk);
+                }
+            }
+        }
+    }
+    LOGI("No double safe spot do Doc, searching for single one");
+    for (auto k : adjacents) {
+        if (state.at(k).isSteppable() && !state.at(k).timeUntilTimeTravel) {
+            LOGI("Single safe spot = " << k);
             return k;
         }
     }
+    LOGI("No safe spot at all");
     return boost::none;
 }
 

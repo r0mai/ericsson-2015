@@ -7,7 +7,7 @@ std::ostream& operator<<(std::ostream& os, const Point& p) {
     return os;
 }
 
-Point Point::moveTo(protocol::Response::Direction d) {
+Point Point::moveTo(protocol::Response::Direction d) const {
     switch (d) {
         case protocol::Response::DOWN: return Point(x, y + 1);
         case protocol::Response::UP: return Point(x, y - 1);
@@ -24,6 +24,24 @@ std::array<Point, 4> Point::getAdjacents() const {
         {x, y + 1},
         {x, y - 1}
     }};
+}
+
+boost::optional<protocol::Response::Direction> Point::getDirection(
+    const Point& other) const
+{
+    if (other == moveTo(protocol::Response::DOWN)) {
+        return protocol::Response::DOWN;
+    }
+    if (other == moveTo(protocol::Response::UP)) {
+        return protocol::Response::UP;
+    }
+    if (other == moveTo(protocol::Response::RIGHT)) {
+        return protocol::Response::RIGHT;
+    }
+    if (other == moveTo(protocol::Response::LEFT)) {
+        return protocol::Response::LEFT;
+    }
+    return boost::none;
 }
 
 } // namespace bm
