@@ -36,6 +36,7 @@ void Game::run() {
         std::chrono::duration<double> diff = end - start;
 
         LOGI("Tick took " << diff.count() * 1000 << "ms");
+        LOGI("----------------------------");
     }
     LOGI("Game over, std::cin.eof(): " << std::cin.eof());
 }
