@@ -232,6 +232,9 @@ protocol::Response Game::calculateResponse() {
     }
 
     LOGI("doc.survive_timetravels = " << doc.survive_timetravels);
+    if (deLoreanLocation) {
+        LOGI("deLorean.survive_timetravels = " << deLorean.survive_timetravels);
+    }
 
     if (state.at(*docLocation).timeUntilTimeTravel) {
         LOGI("Location of doc will time travel in "
