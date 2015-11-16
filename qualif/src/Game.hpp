@@ -40,7 +40,9 @@ public:
     protocol::Response::Direction getDirection(
         const Point& from, const Point& to);
 
-    boost::optional<Point> findSafeBlankAround(const Point& p) const;
+    bool isSafeBlank(const Point& p, int time_travel_in_threshold = 0) const;
+    boost::optional<Point> findSafeBlankAround(
+        const Point& p, int time_travel_in_threshold = 0) const;
 
     const FluxCapatitor& minRadiusFluxCapacitor(
         const std::vector<FluxCapatitor>& fcs);
@@ -49,6 +51,8 @@ public:
     boost::optional<Point> findSafeSpotNear(const Point& from) const;
 
     protocol::Response calculateResponse();
+    // Don't move or stay on places where something will be in the next round
+    protocol::Response postProcessResponse(protocol::Response response);
 
     static constexpr unsigned kMaxRounds = 300;
     static constexpr unsigned kMinTimeTravel = 2; //inclusive

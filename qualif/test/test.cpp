@@ -604,3 +604,42 @@ JUST_TEST_CASE(Game_realLife_second_map_2) {
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::DOWN);
 }
+
+JUST_TEST_CASE(Game_postProcessResponse_1) {
+    State state = stateFromString({
+        "WWWWW",
+        "WD LW",
+        "WWWWW"
+    });
+
+    Game game;
+    game.state = state;
+
+    game.initExtraState();
+    game.state.at(1, 1).next_tick_arrives = ElementType::CHEST;
+
+    auto pprocessed = game.postProcessResponse(response::nothing());
+
+    JUST_ASSERT(pprocessed.has_command());
+    JUST_ASSERT_EQUAL(pprocessed.command(), protocol::Response::MOVE);
+    JUST_ASSERT_EQUAL(pprocessed.direction(), protocol::Response::RIGHT);
+}
+
+JUST_TEST_CASE(Game_postProcessResponse_2) {
+    State state = stateFromString({
+        "WWWWW",
+        "WD LW",
+        "WWWWW"
+    });
+
+    Game game;
+    game.state = state;
+
+    game.initExtraState();
+    game.state.at(2, 1).next_tick_arrives = ElementType::CHEST;
+
+    auto pprocessed = game.postProcessResponse(
+        response::move(protocol::Response::RIGHT));
+
+    JUST_ASSERT(!pprocessed.has_command());
+}

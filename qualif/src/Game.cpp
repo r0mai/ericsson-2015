@@ -29,6 +29,7 @@ void Game::run() {
         protocol::Response response;
         try {
             response = calculateResponse();
+            response = postProcessResponse(response);
         } catch (const std::exception& ex) {
             LOGE("Exception caught: " << ex.what());
             response = response::nothing();
@@ -255,6 +256,48 @@ protocol::Response Game::calculateResponse() {
     return response::nothing();
 }
 
+protocol::Response Game::postProcessResponse(protocol::Response response) {
+    LOGI("postProcessResponse()");
+    if (!docLocation) {
+        return response;
+    }
+
+    Point nextPosition = *docLocation;
+    if (response.has_command() &&
+        response.command() == protocol::Response::MOVE &&
+        response.has_direction()) // this last one should be always true
+    {
+        nextPosition = docLocation->moveTo(response.direction());
+    }
+    if (!state.at(nextPosition).next_tick_arrives) {
+        return response;
+    }
+
+    LOGI("Next position of doc won't be safe");
+
+    if (nextPosition != *docLocation) {
+        if (isSafeBlank(*docLocation, /*threshold =*/ 2)) {
+            LOGI("Doc would move, but current pos is safe");
+            return response::nothing();
+        } else {
+            LOGI("nextPosition is unsafe and our position is unsafe as well");
+        }
+    }
+
+    auto safeSpot = findSafeBlankAround(*docLocation, 2);
+    if (!safeSpot) {
+        LOGE("No safe spot for doc. goodbye :(");
+        return response;
+    }
+    auto direction = docLocation->getDirection(*safeSpot);
+    if (!direction) {
+        LOGE("Direction invalid in postProcessResponse");
+        return response;
+    }
+    LOGI("Moving with doc out of danger");
+    return response::move(*docLocation->getDirection(*safeSpot));
+}
+
 boost::optional<Point> Game::findObject(ElementType type) {
     for (size_t x = 0; x < state.fields.size(); ++x) {
         for (size_t y = 0; y < state.fields[0].size(); ++y) {
@@ -286,14 +329,23 @@ protocol::Response::Direction Game::getDirection(
     return protocol::Response::DOWN;
 }
 
-boost::optional<Point> Game::findSafeBlankAround(const Point& p) const {
+bool Game::isSafeBlank(const Point& p, int time_travel_in_threshold) const {
+    const auto& f = state.at(p);
+    return f.isSteppable() &&
+        (!f.timeUntilTimeTravel || *f.timeUntilTimeTravel >= time_travel_in_threshold) &&
+        !f.next_tick_arrives;
+}
+
+boost::optional<Point> Game::findSafeBlankAround(
+    const Point& p, int time_travel_in_threshold) const
+{
     auto adjacents = p.getAdjacents();
 
     for (auto k : adjacents) {
-        if (state.at(k).isSteppable() && !state.at(k).timeUntilTimeTravel) {
+        if (isSafeBlank(k, time_travel_in_threshold)) {
             auto second_adjacents = k.getAdjacents();
             for (auto kk : second_adjacents) {
-                if (k == kk) {
+                if (p == kk) {
                     continue;
                 }
                 if (state.at(kk).isSteppable()) {
@@ -305,7 +357,7 @@ boost::optional<Point> Game::findSafeBlankAround(const Point& p) const {
     }
     LOGI("No double safe spot do Doc, searching for single one");
     for (auto k : adjacents) {
-        if (state.at(k).isSteppable() && !state.at(k).timeUntilTimeTravel) {
+        if (isSafeBlank(k, time_travel_in_threshold)) {
             LOGI("Single safe spot = " << k);
             return k;
         }
