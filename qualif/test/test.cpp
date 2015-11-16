@@ -643,3 +643,26 @@ JUST_TEST_CASE(Game_postProcessResponse_2) {
 
     JUST_ASSERT(!pprocessed.has_command());
 }
+
+JUST_TEST_CASE(Game_postProcessResponse_3_next_and_current_in_danger) {
+    State state = stateFromString({
+        "WWWWW",
+        "WD LW",
+        "W WWW",
+        "WWWWW"
+    });
+
+    Game game;
+    game.state = state;
+
+    game.initExtraState();
+    game.state.at(2, 1).next_tick_arrives = ElementType::CHEST;
+    game.state.at(1, 1).next_tick_arrives = ElementType::CHEST;
+
+    auto pprocessed = game.postProcessResponse(
+        response::move(protocol::Response::RIGHT));
+
+    JUST_ASSERT(pprocessed.has_command());
+    JUST_ASSERT_EQUAL(pprocessed.command(), protocol::Response::MOVE);
+    JUST_ASSERT_EQUAL(pprocessed.direction(), protocol::Response::DOWN);
+}
