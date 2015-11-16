@@ -252,7 +252,10 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_1) {
     game.doc.flux_capatitors.push_back(fc);
 
     auto response = game.goToDeloreanThroughChests();
+
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
 
     JUST_ASSERT(response->has_command());
     JUST_ASSERT(response->has_direction());
@@ -279,7 +282,10 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_2) {
     game.doc.flux_capatitors.push_back(fc);
 
     auto response = game.goToDeloreanThroughChests();
+
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
 
     JUST_ASSERT(response->has_command());
     JUST_ASSERT(response->has_direction());
@@ -305,6 +311,8 @@ JUST_TEST_CASE(Game_gotoDeloreanWithChests_3) {
 
     auto response = game.goToDeloreanThroughChests();
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
 
     JUST_ASSERT(response->has_command());
     JUST_ASSERT(response->has_direction());
@@ -441,6 +449,8 @@ JUST_TEST_CASE(Game_goToASafeSpot_1) {
     auto response = game.goToASafeSpot();
     JUST_ASSERT(bool(response));
 
+    response = game.postProcessResponse(*response);
+
     JUST_ASSERT(response->has_command());
     JUST_ASSERT(response->has_direction());
     JUST_ASSERT(!response->has_flux_capatitor_id());
@@ -507,7 +517,11 @@ JUST_TEST_CASE(Game_getPathToWithFluxWait_1) {
 
     // response is explicit nothing
     auto response = game.goToDeloreanThroughChests();
+
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
+
     JUST_ASSERT(!response->has_command());
 }
 
@@ -535,7 +549,11 @@ JUST_TEST_CASE(Game_getPathToWithFluxWait_2) {
 
     // response is explicit nothing
     auto response = game.goToDeloreanThroughChests();
+
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
+
     JUST_ASSERT(!response->has_command());
 }
 
@@ -566,6 +584,9 @@ JUST_TEST_CASE(Game_realLife_second_map_1) {
     auto response = game.goToDeloreanThroughChests();
 
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
+
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::MOVE);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::UP);
 }
@@ -601,6 +622,9 @@ JUST_TEST_CASE(Game_realLife_second_map_2) {
     auto response = game.goToDeloreanThroughChests();
 
     JUST_ASSERT(bool(response));
+
+    response = game.postProcessResponse(*response);
+
     JUST_ASSERT_EQUAL(response->command(), protocol::Response::PUTFLUXCAPATITOR);
     JUST_ASSERT_EQUAL(response->direction(), protocol::Response::DOWN);
 }
