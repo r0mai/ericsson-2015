@@ -1,12 +1,16 @@
 #include <memory>
 #include <iostream>
 
-struct S { int i = 10; };
+struct S {
+    S() { std::cout << "constructor : " << this << std::endl; }
+    ~S() { std::cout << "destructor : " << this << std::endl; }
+    int i = 10;
+};
 class SWrapper {
 	std::auto_ptr<S> sItem;
 public:
 	SWrapper() : sItem(new S) { }
-	void dump() { std::cout << sItem->i; }
+	void dump() { std::cout << sItem->i << std::endl; }
 };
 
 int main() {
@@ -15,6 +19,7 @@ int main() {
     SWrapper b = s;
     SWrapper x;
     b.dump();
+    x = b;
     x = b;
     x.dump();
 }
