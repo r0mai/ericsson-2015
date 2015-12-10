@@ -35,6 +35,7 @@ void create_path(int cel_x, int cel_y);
 char follow_path();
 char escape_path();
 void find_safe_place();
+void bomb_places();
 
 
 int main()
@@ -42,7 +43,6 @@ int main()
     add_table();
     show_tick();
     draw_table('r');
-    draw_table('h');
     //draw_table('h');
     bool quit=false;
     do
@@ -66,6 +66,39 @@ int main()
     }while(quit!=true);
 
     return 0;
+}
+
+void bomb_places()
+{
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            if(path_table[j][i]==3)
+            {
+                int iranyok[4];
+                for(int i=0;i<4;i++) iranyok[i]=0;
+                int sugar=0;
+                int kesz=0;
+                do
+                {
+                    kesz=0;
+                    sugar++;
+                    if((path_table[j][i-sugar]==1 || path_table[j][i-sugar]==2 && table[j][i-1]==0) && iranyok[0]==0) path_table[j][i-sugar]=2;
+                    else {iranyok[0]=1;}
+                    if((path_table[j][i+sugar]==1 || path_table[j][i+sugar]==2 && table[j][i+1]==0) && iranyok[1]==0) path_table[j][i+sugar]=2;
+                    else {iranyok[1]=1;}
+                    if((path_table[j-sugar][i]==1 || path_table[j-sugar][i]==2 && table[j-1][i]==0) && iranyok[2]==0) path_table[j-sugar][i]=2;
+                    else {iranyok[2]=1;}
+                    if((path_table[j+sugar][i]==1 || path_table[j+sugar][i]==2 && table[j+1][i]==0) && iranyok[3]==0) path_table[j+sugar][i]=2;
+                    else {iranyok[3]=1;}
+
+                    for(int i=0;i<4;i++) if(iranyok[i]==1) kesz++;
+                }while(kesz!=4 && sugar!=radius);
+
+            }
+        }
+    }
 }
 
 void find_safe_place()
@@ -305,6 +338,7 @@ void create_path(int cel_x, int cel_y)
                 }
             }
         }
+        bomb_places();
         path_table[cel_x][cel_y]=1;
     }
 }
