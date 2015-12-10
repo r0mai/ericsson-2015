@@ -347,7 +347,6 @@ char Kumbi::follow_path()
         if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
         if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
     }
-    else return 's';
 
     return 'a';
 }
@@ -613,7 +612,7 @@ void Kumbi::move_doc(char c)
         }
         break;
 
-        case 's': rH.nothing(); break;
+        case 's': /*rH.nothing();*/ break;
     }
 
     tick++;
