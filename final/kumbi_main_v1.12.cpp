@@ -42,6 +42,7 @@ int main()
     add_table();
     show_tick();
     draw_table('r');
+    draw_table('h');
     //draw_table('h');
     bool quit=false;
     do
@@ -58,7 +59,7 @@ int main()
         else move_doc(follow_path());
         show_tick();
         draw_table('r');
-        draw_table('p');
+        //draw_table('p');
         //draw_table('d');
 
         compute();
@@ -298,6 +299,10 @@ void create_path(int cel_x, int cel_y)
                     if(path_table[j-1][i]==1 && table[j-1][i]==0) path_table[j-1][i]=2;
                     if(path_table[j+1][i]==1 && table[j+1][i]==0) path_table[j+1][i]=2;
                 }
+                if(path_table[j][i]==1 && table[j][i]==1)
+                {
+                    path_table[j][i]=3;
+                }
             }
         }
         path_table[cel_x][cel_y]=1;
@@ -308,12 +313,37 @@ char follow_path()
 {
     if(path_table[doc_x][doc_y-1]==1 && danger_table[doc_x][doc_y-1]==0) return 'u';
     else if(path_table[doc_x][doc_y-1]==2) put_bomb('u',activating_time,2);
+    else if(path_table[doc_x][doc_y-1]==3)
+    {
+        if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
+        if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
+        if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
+    }
     if(path_table[doc_x][doc_y+1]==1 && danger_table[doc_x][doc_y+1]==0) return 'd';
     else if(path_table[doc_x][doc_y+1]==2) put_bomb('d',activating_time,2);
+    else if(path_table[doc_x][doc_y+1]==3)
+    {
+        if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
+        if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
+        if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
+    }
     if(path_table[doc_x-1][doc_y]==1 && danger_table[doc_x-1][doc_y]==0) return 'l';
     else if(path_table[doc_x-1][doc_y]==2) put_bomb('l',activating_time,2);
+    else if(path_table[doc_x-1][doc_y]==3)
+    {
+        if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
+        if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
+        if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
+    }
     if(path_table[doc_x+1][doc_y]==1 && danger_table[doc_x+1][doc_y]==0) return 'r';
     else if(path_table[doc_x+1][doc_y]==2) put_bomb('r',activating_time,2);
+    else if(path_table[doc_x+1][doc_y]==3)
+    {
+        if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
+        if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
+        if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
+    }
+
     return 's';
 }
 
@@ -446,13 +476,14 @@ bool van_bomba()
 void add_table()
 {
 
-    ifstream file("input.txt");
+    ifstream file("input1.txt");
     if(file.is_open())
     {
         file>>table_height;
         file>>table_width;
         file>>radius;
         string sor;
+        int health;
 
         for(int i=0; i<table_height;i++)
         {
@@ -466,30 +497,16 @@ void add_table()
                     case '.': table[j][i]=0; break;
                     case 'D': table[j][i]=-3; break;
                     case 'L': table[j][i]=-2; break;
-                    case 'A': health_table[j][i]=0; break;
-                    case 'B': health_table[j][i]=1; break;
                 }
             }
         }
 
         for(int i=0; i<table_height;i++)
         {
-            file>>sor;
             for(int j=0;j<table_width;j++)
             {
-                switch(sor[j])
-                {
-                    case '0': health_table[j][i]=0; break;
-                    case '1': health_table[j][i]=1; break;
-                    case '2': health_table[j][i]=2; break;
-                    case '3': health_table[j][i]=3; break;
-                    case '4': health_table[j][i]=4; break;
-                    case '5': health_table[j][i]=5; break;
-                    case '6': health_table[j][i]=6; break;
-                    case '7': health_table[j][i]=7; break;
-                    case '8': health_table[j][i]=8; break;
-                    case '9': health_table[j][i]=9; break;
-                }
+                file>>health;
+                health_table[j][i]=health;
             }
         }
 
