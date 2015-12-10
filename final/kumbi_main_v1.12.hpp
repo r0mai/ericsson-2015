@@ -33,9 +33,9 @@ public:
     int safe_x, safe_y;
 
     ResponseHelper  rH;
-    bm::Doc doc;
+    bm::Doc *doc;
 
-    void add_table(bm::State &state, bm::Doc doc);
+    void add_table(bm::State &state, bm::Doc &doc);
     void draw_table(char c);
     void show_tick();
     void move_doc(char c);

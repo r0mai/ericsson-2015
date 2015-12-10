@@ -347,8 +347,9 @@ char Kumbi::follow_path()
         if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
         if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
     }
+    else return 's';
 
-    return 's';
+    return 'a';
 }
 
 char Kumbi::escape_path()
@@ -477,20 +478,14 @@ bool Kumbi::van_bomba()
     return false;
 }
 
-void Kumbi::add_table(bm::State &state, bm::Doc doc)
+void Kumbi::add_table(bm::State &state, bm::Doc &doci)
 {
-    auto start = std::chrono::system_clock::now();
-
     table_height = state.height;
     table_width = state.width;
 
-    this->doc = doc;
-    radius = doc.informations.next_flux_capatitor.radius;
+    this->doc = &doci;
+    radius = doci.informations.next_flux_capatitor.radius;
 
-    auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> diff = end - start;
-    std::cerr << "Add table start " << diff.count() * 1000 << "ms\n";
-    start = end;
 
         for(int i=0; i<table_height;i++)
         {
@@ -505,11 +500,6 @@ void Kumbi::add_table(bm::State &state, bm::Doc doc)
             }
         }
 
-    end = std::chrono::system_clock::now();
-    diff = end - start;
-    std::cerr << "Health table start " << diff.count() * 1000 << "ms\n";
-    start = end;
-
         for(int i=0; i<table_height;i++)
         {
             for(int j=0;j<table_width;j++)
@@ -520,11 +510,6 @@ void Kumbi::add_table(bm::State &state, bm::Doc doc)
                     health_table[j][i] = 0;
             }
         }
-
-    end = std::chrono::system_clock::now();
-    diff = end - start;
-    std::cerr << "Doc start " << diff.count() * 1000 << "ms\n";
-    start = end;
 
         for(int i=1;i<table_height-1;i++)
         {
@@ -636,28 +621,29 @@ void Kumbi::move_doc(char c)
 
 void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
 {
-    if(doc.flux_capatitors.size()>0) {
+    if(this->doc->flux_capatitors.size()>0) {
 
         cerr << "Belep a putba\n";
+        cerr << "Irany: " << c <<"\n";
 
         switch (c) {
             case 'u': {
-                rH.putUp(doc.flux_capatitors[0].id, dmg);
+                rH.putUp(this->doc->flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'd': {
-                rH.putDown(doc.flux_capatitors[0].id, dmg);
+                rH.putDown(this->doc->flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'l': {
-                rH.putLeft(doc.flux_capatitors[0].id, dmg);
+                rH.putLeft(this->doc->flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'r': {
-                rH.putRight(doc.flux_capatitors[0].id, dmg);
+                rH.putRight(this->doc->flux_capatitors[0].id, dmg);
             }
                 break;
         }
