@@ -484,6 +484,7 @@ void Kumbi::add_table(bm::State &state, bm::Doc doc)
     table_height = state.height;
     table_width = state.width;
 
+    this->doc = doc;
     radius = doc.informations.next_flux_capatitor.radius;
 
     auto end = std::chrono::system_clock::now();
@@ -542,6 +543,7 @@ void Kumbi::add_table(bm::State &state, bm::Doc doc)
             }
         }
 
+    rH.nothing();
 }
 
 void Kumbi::draw_table(char c)
@@ -634,31 +636,31 @@ void Kumbi::move_doc(char c)
 
 void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
 {
-    switch(c)
-    {
-          case 'u':
-          {
-              rh.putUp(0,2);
-          }
-          break;
+    if(doc.flux_capatitors.size()>0) {
 
-          case 'd':
-          {
-              rh.putDown(0,2);
-          }
-          break;
+        cerr << "Belep a putba\n";
 
-          case 'l':
-          {
-              rh.putLeft(0,2);
-          }
-          break;
+        switch (c) {
+            case 'u': {
+                rH.putUp(doc.flux_capatitors[0].id, dmg);
+            }
+                break;
 
-          case 'r':
-          {
-              rh.putRight(0,2);
-          }
-          break;
+            case 'd': {
+                rH.putDown(doc.flux_capatitors[0].id, dmg);
+            }
+                break;
+
+            case 'l': {
+                rH.putLeft(doc.flux_capatitors[0].id, dmg);
+            }
+                break;
+
+            case 'r': {
+                rH.putRight(doc.flux_capatitors[0].id, dmg);
+            }
+                break;
+        }
     }
     tick++;
 }
