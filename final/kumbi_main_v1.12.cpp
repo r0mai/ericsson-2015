@@ -1,55 +1,12 @@
-#ifndef KUMBI_HPP
-#define KUMBI_HPP
-
+#include "kumbi_main_v1.12.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "Game.hpp"
 #include "Elements.hpp"
+#include "State.hpp"
 #include "Global.hpp"
 #include "BMResponseHelper.hpp"
-
-using namespace std;
-
-class Kumbi {
-
-public:
-
-    int table_height, table_width; //+2 a keret miatt, az jatek ter bal felso sarka: (1;1)
-    int tick = 0;
-    int radius;
-    int activating_time = 3;
-    int doc_x = 4, doc_y = 4;
-    int del_x = 1, del_y = 1;
-    int esc_x, esc_y;
-
-    int table[100][100];
-    int health_table[100][100];
-    int distance_table[100][100];
-    int path_table[100][100];
-    int temp_table[100][100];
-    int danger_table[100][100];
-    int safe_x, safe_y;
-
-    ResponseHelper  rH;
-
-    void add_table(bm::State &state, bm::Doc doc);
-    void draw_table(char c);
-    void show_tick();
-    void move_doc(char c);
-    void put_bomb(char c, int turns_to_activate, int dmg);
-    char shortest_path(char c);
-    int can_escape(char c);
-    bool van_bomba();
-    void compute();
-    bool inDanger();
-    void create_path(int cel_x, int cel_y);
-    char follow_path();
-    char escape_path();
-    void find_safe_place();
-    void bomb_places();
-
-};
+#include <chrono>
 
 /*int main()
 {
@@ -522,36 +479,51 @@ bool Kumbi::van_bomba()
 
 void Kumbi::add_table(bm::State &state, bm::Doc doc)
 {
+    auto start = std::chrono::system_clock::now();
 
     table_height = state.height;
     table_width = state.width;
 
     radius = doc.informations.next_flux_capatitor.radius;
 
-        for(int i=0; i<table_height;i++)
-        {
-            for(int j=0;j<table_width;j++)
-            {
-                if(state.fields[j][i].is(ElementType::WALL)) table[j][i]=-1;
-                if(state.fields[j][i].is(ElementType::CHEST)) table[j][i]=1;
-                if(state.fields[j][i].is(ElementType::BLANK)) table[j][i]=0;
-                if(state.fields[j][i].is(ElementType::DELOREAN)) table[j][i]=-2;
-                if(state.fields[j][i].is(ElementType::DOC)) table[j][i]=-3;
-                if(state.fields[j][i].is(ElementType::FLUXCAPATITOR)) table[j][i]=2;
-            }
-        }
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    std::cerr << "Add table start " << diff.count() * 1000 << "ms\n";
+    start = end;
 
         for(int i=0; i<table_height;i++)
         {
             for(int j=0;j<table_width;j++)
             {
-                if(state.fields[j][i].is<Chest>())
-                    health_table[j][i] = state.fields[j][i].as<Chest>().survive_timetravels;
+                if(state.fields[j][i].is(bm::ElementType::WALL)) table[j][i]=-1;
+                else if(state.fields[j][i].is(bm::ElementType::CHEST)) table[j][i]=1;
+                else if(state.fields[j][i].is(bm::ElementType::BLANK)) table[j][i]=0;
+                else if(state.fields[j][i].is(bm::ElementType::DELOREAN)) table[j][i]=-2;
+                else if(state.fields[j][i].is(bm::ElementType::DOC)) table[j][i]=-3;
+                else if(state.fields[j][i].is(bm::ElementType::FLUXCAPATITOR)) table[j][i]=2;
+            }
+        }
+
+    end = std::chrono::system_clock::now();
+    diff = end - start;
+    std::cerr << "Health table start " << diff.count() * 1000 << "ms\n";
+    start = end;
+
+        for(int i=0; i<table_height;i++)
+        {
+            for(int j=0;j<table_width;j++)
+            {
+                if(state.fields[j][i].is<bm::Chest>())
+                    health_table[j][i] = state.fields[j][i].as<bm::Chest>().survive_timetravels;
                 else
                     health_table[j][i] = 0;
             }
         }
 
+    end = std::chrono::system_clock::now();
+    diff = end - start;
+    std::cerr << "Doc start " << diff.count() * 1000 << "ms\n";
+    start = end;
 
         for(int i=1;i<table_height-1;i++)
         {
@@ -1094,5 +1066,3 @@ int Kumbi::can_escape(char c)
         return true;
     }
 }
-
-#endif
