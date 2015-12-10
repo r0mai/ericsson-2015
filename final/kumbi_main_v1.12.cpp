@@ -1,44 +1,57 @@
+#ifndef KUMBI_HPP
+#define KUMBI_HPP
+
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "Game.hpp"
+#include "Elements.hpp"
+#include "Global.hpp"
+#include "BMResponseHelper.hpp"
 
 using namespace std;
 
-int table_height, table_width; //+2 a keret miatt, az jatek ter bal felso sarka: (1;1)
-int tick=0;
-int radius;
-int activating_time=3;
-int doc_x=4, doc_y=4;
-int del_x=1, del_y=1;
-int esc_x, esc_y;
+class Kumbi {
 
-int table[100][100];
-int health_table[100][100];
-int distance_table[100][100];
-int path_table[100][100];
-int temp_table[100][100];
-int danger_table[100][100];
-int safe_x, safe_y;
+public:
 
+    int table_height, table_width; //+2 a keret miatt, az jatek ter bal felso sarka: (1;1)
+    int tick = 0;
+    int radius;
+    int activating_time = 3;
+    int doc_x = 4, doc_y = 4;
+    int del_x = 1, del_y = 1;
+    int esc_x, esc_y;
 
-void add_table();
-void draw_table(char c);
-void show_tick();
-void move_doc(char c);
-void put_bomb(char c, int turns_to_activate, int dmg);
-char shortest_path(char c);
-int can_escape(char c);
-bool van_bomba();
-void compute();
-bool inDanger();
-void create_path(int cel_x, int cel_y);
-char follow_path();
-char escape_path();
-void find_safe_place();
-void bomb_places();
+    int table[100][100];
+    int health_table[100][100];
+    int distance_table[100][100];
+    int path_table[100][100];
+    int temp_table[100][100];
+    int danger_table[100][100];
+    int safe_x, safe_y;
 
+    ResponseHelper  rH;
 
-int main()
+    void add_table(bm::State &state, bm::Doc doc);
+    void draw_table(char c);
+    void show_tick();
+    void move_doc(char c);
+    void put_bomb(char c, int turns_to_activate, int dmg);
+    char shortest_path(char c);
+    int can_escape(char c);
+    bool van_bomba();
+    void compute();
+    bool inDanger();
+    void create_path(int cel_x, int cel_y);
+    char follow_path();
+    char escape_path();
+    void find_safe_place();
+    void bomb_places();
+
+};
+
+/*int main()
 {
     add_table();
     show_tick();
@@ -66,9 +79,9 @@ int main()
     }while(quit!=true);
 
     return 0;
-}
+}*/
 
-void bomb_places()
+void Kumbi::bomb_places()
 {
     for(int i=0;i<table_height;i++)
     {
@@ -101,7 +114,7 @@ void bomb_places()
     }
 }
 
-void find_safe_place()
+void Kumbi::find_safe_place()
 {
 
     for(int i=0;i<table_height;i++)
@@ -173,7 +186,7 @@ void find_safe_place()
     }while(quit!=true);
 }
 
-void create_path(int cel_x, int cel_y)
+void Kumbi::create_path(int cel_x, int cel_y)
 {
     if(cel_x!=doc_x || cel_y!=doc_y)
     {
@@ -343,7 +356,7 @@ void create_path(int cel_x, int cel_y)
     }
 }
 
-char follow_path()
+char Kumbi::follow_path()
 {
     if(path_table[doc_x][doc_y-1]==1 && danger_table[doc_x][doc_y-1]==0) return 'u';
     else if(path_table[doc_x][doc_y-1]==2) put_bomb('u',activating_time,2);
@@ -381,7 +394,7 @@ char follow_path()
     return 's';
 }
 
-char escape_path()
+char Kumbi::escape_path()
 {
     if(path_table[doc_x][doc_y-1]==1) return 'u';
     if(path_table[doc_x][doc_y+1]==1) return 'd';
@@ -390,7 +403,7 @@ char escape_path()
     return 's';
 }
 
-bool inDanger()
+bool Kumbi::inDanger()
 {
     for(int i=0;i<table_height;i++)
     {
@@ -434,7 +447,7 @@ bool inDanger()
     else return false;
 }
 
-void compute()
+void Kumbi::compute()
 {
     if(van_bomba())
     {
@@ -495,7 +508,7 @@ void compute()
     }
 }
 
-bool van_bomba()
+bool Kumbi::van_bomba()
 {
     for(int i=0;i<table_height;i++)
     {
@@ -507,31 +520,24 @@ bool van_bomba()
     return false;
 }
 
-void add_table()
+void Kumbi::add_table(bm::State &state, bm::Doc doc)
 {
 
-    ifstream file("input.txt");
-    if(file.is_open())
-    {
-        file>>table_height;
-        file>>table_width;
-        file>>radius;
-        string sor;
-        int health;
+    table_height = state.height;
+    table_width = state.width;
+
+    radius = doc.informations.next_flux_capatitor.radius;
 
         for(int i=0; i<table_height;i++)
         {
-            file>>sor;
             for(int j=0;j<table_width;j++)
             {
-                switch(sor[j])
-                {
-                    case 'W': table[j][i]=-1; break;
-                    case 'C': table[j][i]=1; break;
-                    case '.': table[j][i]=0; break;
-                    case 'D': table[j][i]=-3; break;
-                    case 'L': table[j][i]=-2; break;
-                }
+                if(state.fields[j][i].is(ElementType::WALL)) table[j][i]=-1;
+                if(state.fields[j][i].is(ElementType::CHEST)) table[j][i]=1;
+                if(state.fields[j][i].is(ElementType::BLANK)) table[j][i]=0;
+                if(state.fields[j][i].is(ElementType::DELOREAN)) table[j][i]=-2;
+                if(state.fields[j][i].is(ElementType::DOC)) table[j][i]=-3;
+                if(state.fields[j][i].is(ElementType::FLUXCAPATITOR)) table[j][i]=2;
             }
         }
 
@@ -539,10 +545,13 @@ void add_table()
         {
             for(int j=0;j<table_width;j++)
             {
-                file>>health;
-                health_table[j][i]=health;
+                if(state.fields[j][i].is<Chest>())
+                    health_table[j][i] = state.fields[j][i].as<Chest>().survive_timetravels;
+                else
+                    health_table[j][i] = 0;
             }
         }
+
 
         for(int i=1;i<table_height-1;i++)
         {
@@ -560,10 +569,10 @@ void add_table()
                 }
             }
         }
-    }
+
 }
 
-void draw_table(char c)
+void Kumbi::draw_table(char c)
 {
     for(int i=0;i<table_width;i++)
     {
@@ -611,55 +620,47 @@ void draw_table(char c)
     }
 }
 
-void show_tick()
+void Kumbi::show_tick()
 {
     cout<<endl<<"tick: "<<tick<<endl;
 }
 
-void move_doc(char c)
+void Kumbi::move_doc(char c)
 {
     switch(c)
     {
         case 'u':
         {
-            table[doc_x][doc_y]=0;
-            doc_y--;
-            table[doc_x][doc_y]=-3;
+            rH.moveUp();
         }
         break;
 
         case 'd':
         {
-            table[doc_x][doc_y]=0;
-            doc_y++;
-            table[doc_x][doc_y]=-3;
+            rH.moveDown();
         }
         break;
 
         case 'l':
         {
-            table[doc_x][doc_y]=0;
-            doc_x--;
-            table[doc_x][doc_y]=-3;
+            rH.moveLeft();
         }
         break;
 
 
         case 'r':
         {
-            table[doc_x][doc_y]=0;
-            doc_x++;
-            table[doc_x][doc_y]=-3;
+            rH.moveRight();
         }
         break;
 
-        case 's': break;
+        case 's': rH.nothing(); break;
     }
 
     tick++;
 }
 
-void put_bomb(char c, int turns_to_activate, int dmg)
+void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
 {
     switch(c)
     {
@@ -694,7 +695,7 @@ void put_bomb(char c, int turns_to_activate, int dmg)
     tick++;
 }
 
-char shortest_path(char c)
+char Kumbi::shortest_path(char c)
 {
     if(c=='l')
     {
@@ -954,7 +955,7 @@ char shortest_path(char c)
     //cout<<"!!"<<ut<<"!!"<<endl;
 }
 
-int can_escape(char c)
+int Kumbi::can_escape(char c)
 {
     for(int i=0;i<table_height;i++)
     {
@@ -1093,3 +1094,5 @@ int can_escape(char c)
         return true;
     }
 }
+
+#endif
