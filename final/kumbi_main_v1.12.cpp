@@ -173,46 +173,46 @@ void Kumbi::create_path(int cel_x, int cel_y)
                         if(distance_table[j][i-1]>depth || distance_table[j][i-1]==-3 || distance_table[j][i-1]==-2 || table[j][i-1]==1)
                         {
                             if(distance_table[j][i-1]==-2) quit=true;
-                            else if(table[j][i-1]==1)
+                            else if(table[j][i-1]==1 && distance_table[j][i-1]==-5)
                             {
-                                distance_table[j][i-1]=depth+1+health_table[j][i-1]*8;
+                                if(table[j][i-1]==1) distance_table[j][i-1]=depth+1+health_table[j][i-1]*8;
                             }
-                            else distance_table[j][i-1]=depth+1;
+                            else if(table[j][i-1]!=1) distance_table[j][i-1]=depth+1;
                         }
 
                         if(distance_table[j][i+1]>depth || distance_table[j][i+1]==-3 || distance_table[j][i+1]==-2 || table[j][i+1]==1)
                         {
                             if(distance_table[j][i+1]==-2) quit=true;
-                            else if(table[j][i+1]==1)
+                            else if(table[j][i+1]==1 && distance_table[j][i+1]==-5)
                             {
-                                distance_table[j][i+1]=depth+1+health_table[j][i+1]*8;
+                                if(table[j][i+1]==1) distance_table[j][i+1]=depth+1+health_table[j][i+1]*8;
                             }
-                            else distance_table[j][i+1]=depth+1;
+                            else if(table[j][i+1]!=1) distance_table[j][i+1]=depth+1;
                         }
 
                         if(distance_table[j-1][i]>depth || distance_table[j-1][i]==-3 || distance_table[j-1][i]==-2 || table[j-1][i]==1)
                         {
                             if(distance_table[j-1][i]==-2) quit=true;
-                            else if(table[j-1][i]==1)
+                            else if(table[j-1][i]==1 && distance_table[j-1][i]==-5)
                             {
-                                distance_table[j-1][i]=depth+1+health_table[j-1][i]*8;
+                                if(table[j-1][i]==1) distance_table[j-1][i]=depth+1+health_table[j-1][i]*8;
                             }
-                            else distance_table[j-1][i]=depth+1;
+                            else if(table[j-1][i]!=1) distance_table[j-1][i]=depth+1;
                         }
 
                         if(distance_table[j+1][i]>depth || distance_table[j+1][i]==-3 || distance_table[j+1][i]==-2 || table[j+1][i]==1)
                         {
                             if(distance_table[j+1][i]==-2) quit=true;
-                            else if(table[j+1][i]==1)
+                            else if(table[j+1][i]==1 && distance_table[j+1][i]==-5)
                             {
-                                distance_table[j+1][i]=depth+1+health_table[j+1][i]*8;
+                                if(table[j+1][i]==1) distance_table[j+1][i]=depth+1+health_table[j+1][i]*8;
                             }
-                            else distance_table[j+1][i]=depth+1;
+                            else if(table[j+1][i]!=1) distance_table[j+1][i]=depth+1;
                         }
                     }
                 }
             }
-                //draw_table('d');
+            //draw_table('d');
             depth++;
         }while(quit!=true);
 
@@ -636,31 +636,27 @@ void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
 {
     switch(c)
     {
-          case 'u': if(table[doc_x][doc_y-1]==0)
+          case 'u':
           {
-              table[doc_x][doc_y-1]=2;
-              health_table[doc_x][doc_y-1]=activating_time+1;
+              rh.putUp(0,2);
           }
           break;
 
-          case 'd': if(table[doc_x][doc_y+1]==0)
+          case 'd':
           {
-              table[doc_x][doc_y+1]=2;
-              health_table[doc_x][doc_y+1]=activating_time+1;
+              rh.putDown(0,2);
           }
           break;
 
-          case 'l': if(table[doc_x-1][doc_y]==0)
+          case 'l':
           {
-              table[doc_x-1][doc_y]=2;
-              health_table[doc_x-1][doc_y]=activating_time+1;
+              rh.putLeft(0,2);
           }
           break;
 
-           case 'r': if(table[doc_x+1][doc_y]==0)
+          case 'r':
           {
-              table[doc_x+1][doc_y]=2;
-              health_table[doc_x+1][doc_y]=activating_time+1;
+              rh.putRight(0,2);
           }
           break;
     }
