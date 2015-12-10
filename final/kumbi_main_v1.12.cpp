@@ -476,7 +476,7 @@ bool van_bomba()
 void add_table()
 {
 
-    ifstream file("input1.txt");
+    ifstream file("input.txt");
     if(file.is_open())
     {
         file>>table_height;
