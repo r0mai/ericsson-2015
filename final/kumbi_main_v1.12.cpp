@@ -682,7 +682,8 @@ void Kumbi::add_table(bm::State& state, bm::Doc& doci)
                     if (state.fields[j][i].as<bm::Doc>().id == state.our_doc_id) {
                         table[j][i]=-3;
                     } else {
-                        table[j][i]=-4;
+                        table[j][i]= 1;
+                        health_table[j][i] = 1;
                     }
                 }
                 else if(state.fields[j][i].is(bm::ElementType::FLUXCAPATITOR)) table[j][i]=2;
