@@ -40,13 +40,22 @@ void Game::run() {
         LOGI("Kumbi fluxes: " << kumbi.doc->flux_capatitors.size());
         kumbi.create_path(kumbi.del_x,kumbi.del_y);
 
+        LOGI("before inDnager()");
         if(kumbi.inDanger())
         {
+            LOGI("in if inDnager()");
             kumbi.find_safe_place();
+            LOGI("after find_safe_place()");
             kumbi.create_path(kumbi.safe_x, kumbi.safe_y);
+            LOGI("after create_path()");
             kumbi.move_doc(kumbi.escape_path());
+            LOGI("after move_doc()");
         }
-        else kumbi.move_doc(kumbi.follow_path());
+        else {
+           LOGI("in else ");
+           kumbi.move_doc(kumbi.follow_path());
+           LOGI("in else end");
+        }
 
         response = kumbi.rH.getResponse();
 
