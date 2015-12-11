@@ -50,8 +50,8 @@ std::ostream& operator<<(std::ostream& os, const Field& f) {
 std::string toString(const Fields& fields) {
     std::vector<Point> fluxes;
     std::stringstream ss;
-	ss << fields.size() << "\n";
-	ss << fields[0].size() << "\n";
+    ss << fields.size() << "\n";
+    ss << fields[0].size() << "\n";
     for (size_t y = 0; y < fields[0].size(); ++y) {
         for (size_t x = 0; x < fields.size(); ++x) {
             ss << fields[x][y];
@@ -61,13 +61,13 @@ std::string toString(const Fields& fields) {
         }
         ss << '\n';
     }
-	for (size_t y = 0; y < fields[0].size(); ++y) {
+    for (size_t y = 0; y < fields[0].size(); ++y) {
         for (size_t x = 0; x < fields.size(); ++x) {
             if (fields[x][y].is<Chest>()) {
                 ss << fields[x][y].as<Chest>().survive_timetravels << " ";
             }
-			else
-				ss << 0 << " ";
+            else
+                ss << 0 << " ";
         }
         ss << '\n';
     }

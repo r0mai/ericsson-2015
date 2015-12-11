@@ -37,7 +37,7 @@ void Game::run() {
 
         //Kumbi logic
         kumbi.add_table(state,doc);
-        LOGI("Kumbi fluxes: " << kumbi.doc->flux_capatitors.size());
+        LOGI("Kumbi fluxes: " << kumbi.doc.flux_capatitors.size());
         kumbi.create_path(kumbi.del_x,kumbi.del_y);
 
         LOGI("before inDnager()");

@@ -59,7 +59,7 @@ public:
 
 
     ResponseHelper  rH;
-    bm::Doc *doc;
+    bm::Doc doc;
 
 
 };

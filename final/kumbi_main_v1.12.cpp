@@ -666,7 +666,7 @@ void Kumbi::add_table(bm::State& state, bm::Doc& doci)
     table_height = state.height;
     table_width = state.width;
 
-    this->doc = &doci;
+    this->doc = doci;
     radius = doci.informations.next_flux_capatitor.radius;
 
 
@@ -811,29 +811,29 @@ void Kumbi::move_doc(char c)
 
 void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
 {
-    if(this->doc->flux_capatitors.size()>0) {
+    if(this->doc.flux_capatitors.size()>0) {
 
         cerr << "Belep a putba\n";
         cerr << "Irany: " << c <<"\n";
 
         switch (c) {
             case 'u': {
-                rH.putUp(this->doc->flux_capatitors[0].id, dmg);
+                rH.putUp(this->doc.flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'd': {
-                rH.putDown(this->doc->flux_capatitors[0].id, dmg);
+                rH.putDown(this->doc.flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'l': {
-                rH.putLeft(this->doc->flux_capatitors[0].id, dmg);
+                rH.putLeft(this->doc.flux_capatitors[0].id, dmg);
             }
                 break;
 
             case 'r': {
-                rH.putRight(this->doc->flux_capatitors[0].id, dmg);
+                rH.putRight(this->doc.flux_capatitors[0].id, dmg);
             }
                 break;
         }
