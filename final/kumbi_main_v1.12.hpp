@@ -36,8 +36,6 @@ public:
 	int safe_x, safe_y;
 
 
-        bool build_order();
-
 	void add_table(bm::State& state, bm::Doc& doc);
 	void draw_table(char c);
 	void show_tick();
@@ -60,7 +58,6 @@ public:
         bool would_survive(char c);
 
 
-        int docCount = 0;
     ResponseHelper  rH;
     bm::Doc doc;
 

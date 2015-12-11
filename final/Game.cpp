@@ -41,9 +41,7 @@ void Game::run() {
         kumbi.create_path(kumbi.del_x,kumbi.del_y);
 
         LOGI("before inDnager()");
-        if(kumbi.build_order()) {
-
-        } else if(kumbi.inDanger())
+        if(kumbi.inDanger())
         {
             LOGI("in if inDnager()");
             kumbi.find_safe_place();
