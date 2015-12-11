@@ -1,0 +1,56 @@
+package protocol;
+
+import "Elements.proto";
+
+message Global {
+	enum Error {
+		NOTSETDIRECTION = 1;
+		WRONGDIRECTION = 2;
+
+		WRONGMOVE = 3;
+
+		NOTSETFLUXCAPATITORID = 4;
+		NOTSETFLUXCAPATITORTIME = 5;
+		WRONGFLUXCAPATITORID = 6;
+		WRONGFLUXCAPATITORTIME = 7;
+
+		NOTSETCAPABILITY = 8;
+		WRONGCAPABILITY = 9;
+		WRONGUSECAPABILITY = 10;
+		
+		COMMANDCOLLOSION = 11;
+		YOURDOCTRAVELLINGINTIME = 12;
+	}
+
+	required uint32 width = 1;
+	required uint32 height = 2;
+	repeated Field fields = 3;
+	required uint32 tick = 4;
+	optional Error error = 5;
+
+	required uint32 your_doc_id = 6;
+}
+
+message Field {
+
+	enum ElementType {
+		FLUXCAPATITOR = 1; // fluxuskondenzátor
+		DOC = 2; // Doki, azaz Te
+		WALL = 4; // fal
+		CHEST = 5; // láda
+		DELOREAN = 6; // cél
+		CAPABILITY = 7; // képesség
+	}
+	
+	message ElementInfo {
+		required ElementType type = 1;
+		optional Doc doc = 2;
+		optional FluxCapatitor flux_capatitor = 4;
+		optional Chest chest = 5;
+		optional DeLorean delorean = 6;
+		optional Capability capability = 7;
+	}
+	
+	optional ElementInfo element = 1;
+	optional ElementType next_tick_arrives = 2;
+}
