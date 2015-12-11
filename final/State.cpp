@@ -100,6 +100,10 @@ std::string fromProto(protocol::Global::Error error) {
         return "WRONGCAPABILITY";
     case protocol::Global::WRONGUSECAPABILITY:
         return "WRONGUSECAPABILITY";
+    case protocol::Global::COMMANDCOLLOSION:
+        return "COMMANDCOLLOSION";
+    case protocol::Global::YOURDOCTRAVELLINGINTIME:
+        return "YOURDOCTRAVELLINGINTIME";
     }
     return "UNKNOWN ERROR";
 }
@@ -158,6 +162,7 @@ State fromProto(const protocol::Global& g) {
         s+="]";
         s+="}";
 #endif
+        return "";
     }
 
 } // namespace bm
