@@ -715,6 +715,7 @@ void Kumbi::add_table(bm::State& state, bm::Doc& doci)
                 else if(state.fields[j][i].is(bm::ElementType::CHEST)) table[j][i]=1;
                 else if(state.fields[j][i].is(bm::ElementType::BLANK)) table[j][i]=0;
                 else if(state.fields[j][i].is(bm::ElementType::DELOREAN)) table[j][i]=-2;
+                else if(state.fields[j][i].is(bm::ElementType::CAPABILITY)) table[j][i]=1;
                 else if(state.fields[j][i].is(bm::ElementType::DOC)) {
                     ++docCount;
                     if (state.fields[j][i].as<bm::Doc>().id == state.our_doc_id) {
