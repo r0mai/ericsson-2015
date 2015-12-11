@@ -133,36 +133,36 @@ State fromProto(const protocol::Global& g) {
     return res;
 }
 
-    std::string toJSON(struct State s)
+    std::string toJSON(State &state)
     {
-#if 0
+
         std::string s;
         s="{ ";
         s+="\"grid\": [";
 
-        for (size_t y = 0; y < fields[0].size(); ++y) {
+        for (size_t y = 0; y < state.fields[0].size(); ++y) {
             s+="[";
-            for (size_t x = 0; x < fields.size(); ++x) {
-                if (fields[x][y].is<FluxCapatitor>()) s+=toJSON(fields[x][y].as<FluxCapatitor>());
-                if (fields[x][y].is<Doc>()) s+=toJSON(fields[x][y].as<Doc>());
-                if (fields[x][y].is<Chest>()) s+=toJSON(fields[x][y].as<Chest>());
-                if (fields[x][y].is<DeLorean>()) s+=toJSON(fields[x][y].as<DeLorean>());
-                if (fields[x][y].is<Capability>()) s+=toJSON(fields[x][y].as<Capability>());
-                if (fields[x][y].is<boost::blank>()) s+="{ \'elementType\" : \"blank\" }";
-                if (fields[x][y].is<Wall>()) s+="{ \'elementType\" : \"wall\" }";
+            for (size_t x = 0; x < state.fields.size(); ++x) {
+                if (state.fields[x][y].is<FluxCapatitor>()) s+=toJSON(state.fields[x][y].as<FluxCapatitor>());
+                if (state.fields[x][y].is<Doc>()) s+=toJSON(state.fields[x][y].as<Doc>());
+                if (state.fields[x][y].is<Chest>()) s+=toJSON(state.fields[x][y].as<Chest>());
+                if (state.fields[x][y].is<DeLorean>()) s+=toJSON(state.fields[x][y].as<DeLorean>());
+                if (state.fields[x][y].is<Capability>()) s+=toJSON(state.fields[x][y].as<Capability>());
+                if (state.fields[x][y].is<boost::blank>()) s+="{ \'elementType\" : \"blank\" }";
+                if (state.fields[x][y].is<Wall>()) s+="{ \'elementType\" : \"wall\" }";
 
-                if(x<fields.size()-1)
+                if(x<state.fields.size()-1)
                     s+=",";
             }
             s+="]";
-            if(y<fields[0].size()-1)
+            if(y<state.fields[0].size()-1)
                 s+=",";
         }
 
         s+="]";
         s+="}";
-#endif
-        return "";
+
+        return s;
     }
 
 } // namespace bm

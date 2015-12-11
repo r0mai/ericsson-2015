@@ -35,7 +35,7 @@ std::string toString(const Fields& fields);
 std::string fromProto(protocol::Global::Error error);
 State fromProto(const protocol::Global& g);
 
-    std::string toJSON(struct State s);
+    std::string toJSON(State &state);
 
 } // namespace bm
 
