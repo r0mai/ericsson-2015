@@ -660,16 +660,53 @@ bool Kumbi::van_bomba()
     return false;
 }
 
+bool Kumbi::build_order() {
+    if (docCount != 2) {
+        return false;
+    }
+    switch (tick) {
+        default: return false;
+        case 1: move_doc('d'); return true;
+        case 2: put_bomb('u',3,2); return true;
+        case 3: move_doc('d'); return true;
+        case 4: move_doc('d'); return true;
+        case 5: move_doc('s'); return true;
+        case 6: move_doc('u'); return true;
+        case 7: move_doc('u'); return true;
+        case 8: move_doc('u'); return true;
+        case 9: move_doc('l'); return true;
+        case 10: move_doc('r'); return true;
+        case 11: move_doc('r'); return true;
+        case 12: move_doc('l'); return true;
+        case 13: move_doc('d'); return true;
+        case 14: put_bomb('u',3,2); return true;
+        case 15: move_doc('d'); return true;
+        case 16: move_doc('d'); return true;
+        case 17: move_doc('s'); return true;
+        case 18: move_doc('u'); return true;
+        case 19: move_doc('u'); return true;
+        case 20: move_doc('u'); return true;
+        case 21: move_doc('l'); return true;
+        case 22: move_doc('l'); return true;
+        case 23: move_doc('r'); return true;
+        case 24: move_doc('r'); return true;
+        case 25: move_doc('r'); return true;
+        case 26: move_doc('r'); return true;
+        case 27: move_doc('r'); return true;
+    }
+}
+
 void Kumbi::add_table(bm::State& state, bm::Doc& doci)
 {
 
     table_height = state.height;
     table_width = state.width;
+    tick = state.tick;
 
     this->doc = doci;
     radius = doci.informations.next_flux_capatitor.radius;
 
-
+    docCount = 0;
         for(int i=0; i<table_height;i++)
         {
             for(int j=0;j<table_width;j++)
@@ -679,6 +716,7 @@ void Kumbi::add_table(bm::State& state, bm::Doc& doci)
                 else if(state.fields[j][i].is(bm::ElementType::BLANK)) table[j][i]=0;
                 else if(state.fields[j][i].is(bm::ElementType::DELOREAN)) table[j][i]=-2;
                 else if(state.fields[j][i].is(bm::ElementType::DOC)) {
+                    ++docCount;
                     if (state.fields[j][i].as<bm::Doc>().id == state.our_doc_id) {
                         table[j][i]=-3;
                     } else {
@@ -805,8 +843,6 @@ void Kumbi::move_doc(char c)
 
         case 's': /*rH.nothing();*/ break;
     }
-
-    tick++;
 }
 
 void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
@@ -838,7 +874,6 @@ void Kumbi::put_bomb(char c, int turns_to_activate, int dmg)
                 break;
         }
     }
-    tick++;
 }
 
 char Kumbi::shortest_path(char c)
