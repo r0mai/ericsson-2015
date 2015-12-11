@@ -428,13 +428,7 @@ char Kumbi::follow_path()
     if(path_table[doc_x][doc_y-1]==1 && danger_table[doc_x][doc_y-1]==0) return 'u';
     else if(path_table[doc_x][doc_y-1]==2)
     {
-        if(would_survive('u')) {
-            if (table[doc_x][doc_y-1] == 8) {
-                return 'u';
-            } else {
-                put_bomb('u',activating_time,2);
-            }
-        }
+        if(would_survive('u')) put_bomb('u',activating_time,2);
         else
         {
             path_table[doc_x][doc_y-1]=1;
@@ -451,12 +445,7 @@ char Kumbi::follow_path()
     if(path_table[doc_x][doc_y+1]==1 && danger_table[doc_x][doc_y+1]==0) return 'd';
     else if(path_table[doc_x][doc_y+1]==2)
     {
-        if(would_survive('d'))
-            if (table[doc_x][doc_y+1] == 8) {
-                return 'd';
-            } else {
-                put_bomb('d',activating_time,2);
-            }
+        if(would_survive('d')) put_bomb('d',activating_time,2);
         else
         {
             path_table[doc_x][doc_y+1]=1;
@@ -473,12 +462,7 @@ char Kumbi::follow_path()
     if(path_table[doc_x-1][doc_y]==1 && danger_table[doc_x-1][doc_y]==0) return 'l';
     else if(path_table[doc_x-1][doc_y]==2)
     {
-        if(would_survive('l'))
-            if (table[doc_x-1][doc_y] == 8) {
-                return 'l';
-            } else {
-                put_bomb('l',activating_time,2);
-            }
+        if(would_survive('l')) put_bomb('l',activating_time,2);
         else
         {
             path_table[doc_x-1][doc_y]=1;
@@ -495,12 +479,7 @@ char Kumbi::follow_path()
     if(path_table[doc_x+1][doc_y]==1 && danger_table[doc_x+1][doc_y]==0) return 'r';
     else if(path_table[doc_x+1][doc_y]==2)
     {
-        if(would_survive('r'))
-            if (table[doc_x+1][doc_y] == 8) {
-                return 'r';
-            } else {
-                put_bomb('r',activating_time,2);
-            }
+        if(would_survive('r')) put_bomb('r',activating_time,2);
         else
         {
             path_table[doc_x+1][doc_y]=1;
@@ -746,7 +725,6 @@ void Kumbi::add_table(bm::State& state, bm::Doc& doci)
                     }
                 }
                 else if(state.fields[j][i].is(bm::ElementType::FLUXCAPATITOR)) table[j][i]=2;
-                else if(state.fields[j][i].is(bm::ElementType::CAPABILITY)) table[j][i]=8;
             }
         }
 
