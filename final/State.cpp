@@ -147,7 +147,7 @@ State fromProto(const protocol::Global& g) {
                 if (state.fields[x][y].is<Doc>()) s+=toJSON(state.fields[x][y].as<Doc>());
                 if (state.fields[x][y].is<Chest>()) s+=toJSON(state.fields[x][y].as<Chest>());
                 if (state.fields[x][y].is<DeLorean>()) s+=toJSON(state.fields[x][y].as<DeLorean>());
-                if (state.fields[x][y].is<Capability>()) s+=toJSON(state.fields[x][y].as<Capability>());
+                if (state.fields[x][y].is<Capability>()) s+="{ \'elementType\" : \"capability\" }";
                 if (state.fields[x][y].is<boost::blank>()) s+="{ \'elementType\" : \"blank\" }";
                 if (state.fields[x][y].is<Wall>()) s+="{ \'elementType\" : \"wall\" }";
 
