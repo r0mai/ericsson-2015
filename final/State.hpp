@@ -15,6 +15,7 @@ using Fields = std::vector<std::vector<Field>>;
 
 struct State {
     uint32_t tick;
+    uint32_t our_doc_id;
 
     uint32_t width;
     uint32_t height;

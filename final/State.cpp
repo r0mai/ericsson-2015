@@ -112,6 +112,7 @@ State fromProto(const protocol::Global& g) {
     State res;
 
     res.tick = g.tick();
+    res.our_doc_id = g.your_doc_id();
 
     res.width = g.width();
     res.height = g.height();
