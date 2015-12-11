@@ -8,35 +8,141 @@
 #include "BMResponseHelper.hpp"
 #include <chrono>
 
-/*int main()
+bool Kumbi::would_survive(char c)
 {
-    add_table();
-    show_tick();
-    draw_table('r');
-    //draw_table('h');
+    int temp_table[100][100];
+
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            temp_table[j][i]=table[j][i];
+        }
+    }
+
+    switch(c)
+    {
+        case 'u': temp_table[doc_x][doc_y-1]=2; break;
+        case 'd': temp_table[doc_x][doc_y+1]=2; break;
+        case 'l': temp_table[doc_x-1][doc_y]=2; break;
+        case 'r': temp_table[doc_x+1][doc_y]=2; break;
+    }
+
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            distance_table[j][i]=-3;
+            if(temp_table[j][i]==-1) distance_table[j][i]=-1;
+            if(temp_table[j][i]==1) distance_table[j][i]=-5;
+            if(temp_table[j][i]==2) distance_table[j][i]=-6;
+        }
+    }
+
+    int depth=0;
     bool quit=false;
+    distance_table[doc_x][doc_y]=0;
+
+
+
+    //!!!!!!!!!!!!!!!!!!!
+
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            danger_table[j][i]=temp_table[j][i];
+            if(temp_table[j][i]==-2) danger_table[j][i]=0;
+        }
+    }
+
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            if(danger_table[j][i]==2)
+            {
+                int iranyok[4];
+                for(int i=0;i<4;i++) iranyok[i]=0;
+                int sugar=0;
+                int kesz=0;
+                do
+                {
+                    kesz=0;
+                    sugar++;
+                    if((danger_table[j][i-sugar]==0 || danger_table[j][i-sugar]==-3) && iranyok[0]==0) danger_table[j][i-sugar]=5;
+                    else {iranyok[0]=1;}
+                    if((danger_table[j][i+sugar]==0 || danger_table[j][i+sugar]==-3) && iranyok[1]==0) danger_table[j][i+sugar]=5;
+                    else {iranyok[1]=1;}
+                    if((danger_table[j-sugar][i]==0 || danger_table[j-sugar][i]==-3) && iranyok[2]==0) danger_table[j-sugar][i]=5;
+                    else {iranyok[2]=1;}
+                    if((danger_table[j+sugar][i]==0 || danger_table[j+sugar][i]==-3) && iranyok[3]==0) danger_table[j+sugar][i]=5;
+                    else {iranyok[3]=1;}
+
+                    for(int i=0;i<4;i++) if(iranyok[i]==1) kesz++;
+                }while(kesz!=4 && sugar!=radius);
+
+            }
+        }
+    }
+
+    //!!!!!!!!!!!!!!!!!!!
+
+
     do
     {
-        char i;
-        cin>>i;
-        create_path(del_x,del_y);
-        if(inDanger())
+        for(int i=1;i<table_height-1;i++)
         {
-            find_safe_place();
-            create_path(safe_x, safe_y);
-            move_doc(escape_path());
+            for(int j=1;j<table_width-1;j++)
+            {
+                if(distance_table[j][i]==depth && quit==false)
+                {
+                    if(distance_table[j][i-1]>depth || distance_table[j][i-1]==-3 || distance_table[j][i-1]==-2 || distance_table[j][i-1]==-5)
+                    {
+                        if(danger_table[j][i-1]==0) {safe_x=j; safe_y=i-1; return true;}
+                        else if(distance_table[j][i-1]==-5)
+                        {
+                            distance_table[j][i-1]=depth+1+health_table[j][i-1]*3;
+                        }
+                        else distance_table[j][i-1]=depth+1;
+                    }
+
+                    if(distance_table[j][i+1]>depth || distance_table[j][i+1]==-3 || distance_table[j][i+1]==-2 || distance_table[j][i+1]==-5)
+                    {
+                        if(danger_table[j][i+1]==0) {safe_x=j; safe_y=i+1; return true;}
+                        else if(distance_table[j][i+1]==-5)
+                        {
+                            distance_table[j][i+1]=depth+1+health_table[j][i+1]*3;
+                        }
+                        else distance_table[j][i+1]=depth+1;
+                    }
+
+                    if(distance_table[j-1][i]>depth || distance_table[j-1][i]==-3 || distance_table[j-1][i]==-2 || distance_table[j-1][i]==-5)
+                    {
+                        if(danger_table[j-1][i]==0) {safe_x=j-1; safe_y=i; return true;}
+                        else if(distance_table[j-1][i]==-5)
+                        {
+                            distance_table[j-1][i]=depth+1+health_table[j-1][i]*3;
+                        }
+                        else distance_table[j-1][i]=depth+1;
+                    }
+
+                    if(distance_table[j+1][i]>depth || distance_table[j+1][i]==-3 || distance_table[j+1][i]==-2 || distance_table[j+1][i]==-5)
+                    {
+                        if(danger_table[j+1][i]==0) {safe_x=j+1; safe_y=i; return true;}
+                        else if(distance_table[j+1][i]==-5)
+                        {
+                            distance_table[j+1][i]=depth+1+health_table[j+1][i]*3;
+                        }
+                        else distance_table[j+1][i]=depth+1;
+                    }
+                }
+            }
         }
-        else move_doc(follow_path());
-        show_tick();
-        draw_table('r');
-        //draw_table('p');
-        //draw_table('d');
-
-        compute();
-    }while(quit!=true);
-
-    return 0;
-}*/
+        depth++;
+    }while(depth!=activating_time);
+    return false;
+}
 
 void Kumbi::bomb_places()
 {
@@ -54,13 +160,13 @@ void Kumbi::bomb_places()
                 {
                     kesz=0;
                     sugar++;
-                    if((path_table[j][i-sugar]==1 || path_table[j][i-sugar]==2 && table[j][i-1]==0) && iranyok[0]==0) path_table[j][i-sugar]=2;
+                    if(table[j][i-sugar]==0 && iranyok[0]==0) path_table[j][i-sugar]=2;
                     else {iranyok[0]=1;}
-                    if((path_table[j][i+sugar]==1 || path_table[j][i+sugar]==2 && table[j][i+1]==0) && iranyok[1]==0) path_table[j][i+sugar]=2;
+                    if(table[j][i+sugar]==0 && iranyok[1]==0) path_table[j][i+sugar]=2;
                     else {iranyok[1]=1;}
-                    if((path_table[j-sugar][i]==1 || path_table[j-sugar][i]==2 && table[j-1][i]==0) && iranyok[2]==0) path_table[j-sugar][i]=2;
+                    if(table[j-sugar][i]==0 && iranyok[2]==0) path_table[j-sugar][i]=2;
                     else {iranyok[2]=1;}
-                    if((path_table[j+sugar][i]==1 || path_table[j+sugar][i]==2 && table[j+1][i]==0) && iranyok[3]==0) path_table[j+sugar][i]=2;
+                    if(table[j+sugar][i]==0 && iranyok[3]==0) path_table[j+sugar][i]=2;
                     else {iranyok[3]=1;}
 
                     for(int i=0;i<4;i++) if(iranyok[i]==1) kesz++;
@@ -73,7 +179,6 @@ void Kumbi::bomb_places()
 
 void Kumbi::find_safe_place()
 {
-
     for(int i=0;i<table_height;i++)
     {
         for(int j=0;j<table_width;j++)
@@ -140,7 +245,8 @@ void Kumbi::find_safe_place()
         }
                 //draw_table('d');
         depth++;
-    }while(quit!=true);
+    }while(quit!=true && depth!=activating_time);
+    if(!quit) cout<<"MEGHALTAL"<<endl;
 }
 
 void Kumbi::create_path(int cel_x, int cel_y)
@@ -315,40 +421,79 @@ void Kumbi::create_path(int cel_x, int cel_y)
 
 char Kumbi::follow_path()
 {
+    inDanger();
+    //draw_table('a');
+    //draw_table('p');
+    //cout<<"!!!"<<path_table[doc_x][doc_y-1]<<"!!"<<danger_table[doc_x][doc_y-1]<<endl;
     if(path_table[doc_x][doc_y-1]==1 && danger_table[doc_x][doc_y-1]==0) return 'u';
-    else if(path_table[doc_x][doc_y-1]==2) put_bomb('u',activating_time,2);
+    else if(path_table[doc_x][doc_y-1]==2)
+    {
+        if(would_survive('u')) put_bomb('u',activating_time,2);
+        else
+        {
+            path_table[doc_x][doc_y-1]=1;
+            return follow_path();
+        }
+    }
     else if(path_table[doc_x][doc_y-1]==3)
     {
         if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
         if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
         if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
     }
+
     if(path_table[doc_x][doc_y+1]==1 && danger_table[doc_x][doc_y+1]==0) return 'd';
-    else if(path_table[doc_x][doc_y+1]==2) put_bomb('d',activating_time,2);
+    else if(path_table[doc_x][doc_y+1]==2)
+    {
+        if(would_survive('d')) put_bomb('d',activating_time,2);
+        else
+        {
+            path_table[doc_x][doc_y+1]=1;
+            return follow_path();
+        }
+    }
     else if(path_table[doc_x][doc_y+1]==3)
     {
         if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
         if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
         if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
     }
+
     if(path_table[doc_x-1][doc_y]==1 && danger_table[doc_x-1][doc_y]==0) return 'l';
-    else if(path_table[doc_x-1][doc_y]==2) put_bomb('l',activating_time,2);
+    else if(path_table[doc_x-1][doc_y]==2)
+    {
+        if(would_survive('l')) put_bomb('l',activating_time,2);
+        else
+        {
+            path_table[doc_x-1][doc_y]=1;
+            return follow_path();
+        }
+    }
     else if(path_table[doc_x-1][doc_y]==3)
     {
         if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
         if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
         if(table[doc_x+1][doc_y]==0 && danger_table[doc_x+1][doc_y]==0) return 'r';
     }
+
     if(path_table[doc_x+1][doc_y]==1 && danger_table[doc_x+1][doc_y]==0) return 'r';
-    else if(path_table[doc_x+1][doc_y]==2) put_bomb('r',activating_time,2);
+    else if(path_table[doc_x+1][doc_y]==2)
+    {
+        if(would_survive('r')) put_bomb('r',activating_time,2);
+        else
+        {
+            path_table[doc_x+1][doc_y]=1;
+            return follow_path();
+        }
+    }
     else if(path_table[doc_x+1][doc_y]==3)
     {
         if(table[doc_x][doc_y+1]==0 && danger_table[doc_x][doc_y+1]==0) return 'd';
         if(table[doc_x][doc_y-1]==0 && danger_table[doc_x][doc_y-1]==0) return 'u';
         if(table[doc_x-1][doc_y]==0 && danger_table[doc_x-1][doc_y]==0) return 'l';
     }
-
-    return 'a';
+    //cout<<"ASD"<<endl;
+    return 's';
 }
 
 char Kumbi::escape_path()
@@ -406,6 +551,15 @@ bool Kumbi::inDanger()
 
 void Kumbi::compute()
 {
+    for(int i=0;i<table_height;i++)
+    {
+        for(int j=0;j<table_width;j++)
+        {
+            if(time_table[j][i]>0) time_table[j][i]--;
+        }
+    }
+
+
     if(van_bomba())
     {
         for(int i=0;i<table_height;i++)
@@ -415,6 +569,7 @@ void Kumbi::compute()
                 if(table[j][i]==2)
                 {
                     health_table[j][i]--;
+                    //cout<<"XXX"<<j<<"XXX"<<i<<"XXX"<<endl;
                     if(health_table[j][i]==0)
                     {
                         table[j][i]=0;
@@ -431,24 +586,48 @@ void Kumbi::compute()
                             {
                                 iranyok[0]=1; kesz++;
                                 if(table[j][i-sugar]==1) health_table[j][i-sugar]--;
+                                if(health_table[j][i-sugar]>0)
+                                {
+                                    save_table[j][i-sugar]=table[j][i-sugar];
+                                    table[j][i-sugar]=0;
+                                    time_table[j][i-sugar]=dmg;
+                                }
                             }
                             if((table[j][i+sugar]==0 || table[j][i+sugar]==-3) || iranyok[1]==1) a++;
                             else
                             {
                                 iranyok[1]=1; kesz++;
                                 if(table[j][i+sugar]==1) health_table[j][i+sugar]--;
+                                if(health_table[j][i-sugar]>0)
+                                {
+                                    save_table[j][i+sugar]=table[j][i+sugar];
+                                    table[j][i+sugar]=0;
+                                    time_table[j][i+sugar]=dmg;
+                                }
                             }
                             if((table[j-sugar][i]==0 || table[j-sugar][i]==-3) || iranyok[2]==1) a++;
                             else
                             {
                                 iranyok[2]=1; kesz++;
                                 if(table[j-sugar][i]==1) health_table[j-sugar][i]--;
+                                if(health_table[j][i-sugar]>0)
+                                {
+                                    save_table[j-sugar][i]=table[j-sugar][i];
+                                    table[j-sugar][i]=0;
+                                    time_table[j-1][sugar]=dmg;
+                                }
                             }
-                            if((table[j+sugar][i]==0 || table[j+sugar][i]==-3) || iranyok[4]==1) a++;
+                            if((table[j+sugar][i]==0 || table[j+sugar][i]==-3) || iranyok[3]==1) a++;
                             else
                             {
                                 iranyok[3]=1; kesz++;
                                 if(table[j+sugar][i]==1) health_table[j+sugar][i]--;
+                                if(health_table[j][i-sugar]>0)
+                                {
+                                    save_table[j+sugar][i]=table[j+sugar][i];
+                                    table[j+sugar][i]=0;
+                                    time_table[j+1][sugar]=dmg;
+                                }
                             }
                         }while(kesz!=4 && sugar!=radius);
                     }
@@ -460,6 +639,10 @@ void Kumbi::compute()
     {
         for(int j=0;j<table_width;j++)
         {
+            if(time_table[j][i]==0 && save_table[j][i]!=0)
+            {
+                table[j][i]=save_table[j][i];
+            }
             if(table[j][i]==1 && health_table[j][i]==0) table[j][i]=0;
         }
     }
@@ -471,14 +654,15 @@ bool Kumbi::van_bomba()
     {
         for(int j=0;j<table_width;j++)
         {
-            if(table[j][i]==2)return true;
+            if(table[j][i]==2) return true;
         }
     }
     return false;
 }
 
-void Kumbi::add_table(bm::State &state, bm::Doc &doci)
+void Kumbi::add_table()
 {
+
     table_height = state.height;
     table_width = state.width;
 
@@ -571,7 +755,7 @@ void Kumbi::draw_table(char c)
 
             else if(c=='a')
             {
-                cout<<danger_table[j][i];
+                cout<<danger_table[j][i]<<"   ";
             }
         }
         cout<<endl;
