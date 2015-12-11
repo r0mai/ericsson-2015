@@ -124,7 +124,7 @@ State fromProto(const protocol::Global& g) {
     BM_ASSERT(g.fields_size() == int(res.width * res.height));
     for (uint32_t y = 0; y < res.height; ++y) {
         for (uint32_t x = 0; x < res.width; ++x) {
-            res.fields[x][y] = fromProto(g.fields(y * res.height + x));
+            res.fields[x][y] = fromProto(g.fields(y * res.width + x));
         }
     }
 
