@@ -8,7 +8,6 @@ struct IsAVisitor : boost::static_visitor<bool> {
     bool operator()(const boost::blank&) const { return type == ElementType::BLANK; }
     bool operator()(const FluxCapatitor&) const { return type == ElementType::FLUXCAPATITOR; }
     bool operator()(const Doc&) const { return type == ElementType::DOC; }
-    bool operator()(const Enemy&) const { return type == ElementType::ENEMY; }
     bool operator()(const Wall&) const { return type == ElementType::WALL; }
     bool operator()(const Chest&) const { return type == ElementType::CHEST; }
     bool operator()(const DeLorean&) const { return type == ElementType::DELOREAN; }
@@ -45,8 +44,6 @@ ElementType fromProto(protocol::Field::ElementType et) {
 	    return ElementType::FLUXCAPATITOR;
         case protocol::Field::DOC:
 	    return ElementType::DOC;
-        case protocol::Field::ENEMY:
-	    return ElementType::ENEMY;
         case protocol::Field::WALL:
 	    return ElementType::WALL;
         case protocol::Field::CHEST:
@@ -67,9 +64,6 @@ FieldElement fromProto(const protocol::Field::ElementInfo& ei) {
 	case ElementType::DOC:
 	    BM_ASSERT(ei.has_doc());
 	    return fromProto(ei.doc());
-	case ElementType::ENEMY:
-	    BM_ASSERT(ei.has_enemy());
-	    return fromProto(ei.enemy());
 	case ElementType::WALL:
 	    return Wall{};
 	case ElementType::CHEST:

@@ -660,7 +660,7 @@ bool Kumbi::van_bomba()
     return false;
 }
 
-void Kumbi::add_table()
+void Kumbi::add_table(bm::State& state, bm::Doc& doci)
 {
 
     table_height = state.height;
@@ -1090,7 +1090,8 @@ char Kumbi::shortest_path(char c)
         }
         return ut[0];
     }
-
+    assert(false);
+    return 'X';
     //cout<<"!!"<<ut<<"!!"<<endl;
 }
 
@@ -1143,7 +1144,7 @@ int Kumbi::can_escape(char c)
                     else {iranyok[1]=1; kesz++;}
                     if((temp_table[j-sugar][i]==0 || temp_table[j-sugar][i]==-3) && iranyok[2]==0) temp_table[j-sugar][i]=5;
                     else {iranyok[2]=1; kesz++;}
-                    if((temp_table[j+sugar][i]==0 || temp_table[j+sugar][i]==-3) && iranyok[4]==0) temp_table[j+sugar][i]=5;
+                    if((temp_table[j+sugar][i]==0 || temp_table[j+sugar][i]==-3) && iranyok[3]==0) temp_table[j+sugar][i]=5;
                     else {iranyok[3]=1; kesz++;}
                 }while(kesz!=4 && sugar!=radius);
             }
@@ -1232,4 +1233,5 @@ int Kumbi::can_escape(char c)
         //cout<<"!!"<<esc_x<<"!!"<<esc_y<<"!!"<<table[esc_x][esc_y]<<endl;
         return true;
     }
+    return false;
 }

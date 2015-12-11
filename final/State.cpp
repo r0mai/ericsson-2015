@@ -2,7 +2,7 @@
 #include "Util.hpp"
 
 #include <sstream>
-#include <stream>
+#include <string>
 
 namespace bm {
 
@@ -35,7 +35,6 @@ const Field& State::at(int x, int y) const {
 struct ToCharVisitor : boost::static_visitor<char> {
     char operator()(const FluxCapatitor&) const { return 'F'; }
     char operator()(const Doc&) const { return 'D'; }
-    char operator()(const Enemy&) const { return 'E'; }
     char operator()(const Wall&) const { return 'W'; }
     char operator()(const Chest&) const { return 'C'; }
     char operator()(const DeLorean&) const { return 'L'; }
@@ -132,6 +131,7 @@ State fromProto(const protocol::Global& g) {
 
     std::string toJSON(struct State s)
     {
+#if 0
         std::string s;
         s="{ ";
         s+="\"grid\": [";
@@ -157,6 +157,7 @@ State fromProto(const protocol::Global& g) {
 
         s+="]";
         s+="}";
+#endif
     }
 
 } // namespace bm

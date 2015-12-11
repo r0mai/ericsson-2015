@@ -36,7 +36,7 @@ public:
 	int safe_x, safe_y;
 
 
-	void add_table();
+	void add_table(bm::State& state, bm::Doc& doc);
 	void draw_table(char c);
 	void show_tick();
 	void move_doc(char c);
@@ -51,6 +51,11 @@ public:
 	char escape_path();
 	void find_safe_place();
 	void bomb_places();
+
+
+
+
+        bool would_survive(char c);
 
 
     ResponseHelper  rH;

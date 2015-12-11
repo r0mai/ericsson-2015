@@ -71,15 +71,6 @@ Doc fromProto(const protocol::Doc& doc) {
     return res;
 }
 
-Enemy fromProto(const protocol::Enemy& e) {
-    Enemy res;
-    res.id = e.id();
-    res.survive_timetravels = e.survive_timetravels();
-    res.intelligence = e.intelligence();
-    res.radius = e.radius();
-    return res;
-}
-
 Chest fromProto(const protocol::Chest& c) {
     Chest res;
     res.id = c.id();

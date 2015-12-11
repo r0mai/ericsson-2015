@@ -50,13 +50,6 @@ struct Doc {
     std::vector<Capability> capabilities;
 };
 
-struct Enemy {
-    uint32_t id;
-    uint32_t survive_timetravels;
-    uint32_t intelligence;
-    int radius;
-};
-
 struct Chest {
     uint32_t id;
     uint32_t survive_timetravels;
@@ -72,7 +65,6 @@ Capability fromProto(protocol::Capability c);
 FluxCapatitor fromProto(const protocol::FluxCapatitor& fc);
 FluxCapatitorInformations fromProto(const protocol::FluxCapatitorInformations& fci);
 Doc fromProto(const protocol::Doc& doc);
-Enemy fromProto(const protocol::Enemy& e);
 Chest fromProto(const protocol::Chest& c);
 DeLorean fromProto(const protocol::DeLorean& d);
 
